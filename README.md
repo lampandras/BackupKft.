@@ -1,2 +1,2 @@
 # Vizsgaremek
-Tartalmaz minden verziót a vizsgaremekben található fájlokról.
+Tartalmazza az összes verzióját a vizsgaremekben található fájloknak.
