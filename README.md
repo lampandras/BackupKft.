@@ -1,2 +1,2 @@
 # Vizsgaremek
-Tartalmazza az összes verzióját a vizsgaremekben található fájloknak.
+Ebben a repositoryban megtalálható az összes szükséges fájl összes verziója.
