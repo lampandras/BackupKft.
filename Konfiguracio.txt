@@ -1,0 +1,497 @@
+
+
+_____________________________________________(っ◔◡◔)っ ♥ Budapest ♥__________________________________________________________
+
+-------->R_B<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host R_B
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->MLS_Szerverszoba_B<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_Szerverszoba_B
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->MLS_Irodak_B<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_Irodak_B
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+-------->MLS_CEO_B<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_CEO_B
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+
+_____________________________________________(っ◔◡◔)っ ♥ Kecskemét ♥_____________________________________________________
+
+
+-------->R_K<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host R_K
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->MLS_K<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_K
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->MLS_Iroda1_K<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_Iroda1_K
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->MLS_Iroda2_K<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_Iroda2_K
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->MLS_Iroda3_K<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_Iroda3_K
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+
+_____________________________________________(っ◔◡◔)っ ♥ Debrecen ♥_____________________________________________________
+
+
+
+-------->R1_D<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host R1_D
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->R2_D<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host R2_D
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->R3_D<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host R3_D
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->MLS_D<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_D
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+
+
+_________________________________________•?((¯°·._.• 丅Ｈ𝐞 έⓝ𝒹 •._.·°¯))؟•____________________________________________
+
+
+
+
+
+
