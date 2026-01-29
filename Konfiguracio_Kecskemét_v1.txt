@@ -1,0 +1,860 @@
+
+
+_____________________________________________(っ◔◡◔)っ ♥ Budapest ♥__________________________________________________________
+
+-------->R_B<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host R_B
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->MLS_Szerverszoba_B<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_Szerverszoba_B
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->MLS_Irodak_B<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_Irodak_B
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+-------->MLS_CEO_B<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_CEO_B
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+
+_____________________________________________(っ◔◡◔)っ ♥ Kecskemét ♥_____________________________________________________
+
+-------->R_Border_K<--------
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host R_Border_K
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int g0/0/0
+ip add 10.10.10.109 255.255.255.252
+des R_K fele
+no sh
+exit
+
+int se0/1/1
+ip add 209.165.44.2 255.255.255.252
+des ISP fele
+no sh
+exit
+
+ip route 0.0.0.0 0.0.0.0 se0/1/1
+
+router eigrp 6000
+eigrp router-id 6.6.6.7
+network 10.10.10.108 0.0.0.3
+pass se0/1/1
+red sta
+no auto-sum
+exit
+
+
+
+-------->R_K<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host R_K
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int g0/0/1.11
+enc dot 11
+ip add 10.10.10.81 255.255.255.248
+ip helper 10.10.10.66
+des Vlan 11 gateway
+no sh
+exit
+
+int g0/0/1.21
+enc dot 21
+ip add 10.10.10.89 255.255.255.248
+ip helper 10.10.10.66
+des Vlan 21 gateway
+no sh
+exit
+
+int g0/0/1.31
+enc dot 31
+ip add 10.10.10.97 255.255.255.248
+ip helper 10.10.10.66
+des Vlan 31 gateway
+no sh
+exit
+
+int g0/0/1.199
+enc dot 199 nat
+ip add 10.10.10.65 255.255.255.240
+ip helper 10.10.10.66
+des Vlan 199 gateway
+no sh
+exit
+
+int g0/0/1.51
+enc dot 51
+ip add 10.10.10.105 255.255.255.252
+ip helper 10.10.10.66
+des Vlan 51 gateway
+no sh
+exit
+
+int g0/0/1.101
+enc dot 101
+ip add 10.10.10.1 255.255.255.224
+ip helper 10.10.10.66
+des Vlan 101 gateway
+no sh
+exit
+
+int g0/0/1.201
+enc dot 201
+ip add 10.10.10.33 255.255.255.224
+ip helper 10.10.10.66
+des Vlan 201 gateway
+no sh
+exit
+
+int g0/0/1
+no sh
+exit
+
+int g0/0/0
+ip add 10.10.10.110 255.255.255.252
+des R_Border_K fele
+no sh
+exit
+
+router eigrp 6000
+eigrp router-id 6.6.6.6
+network 10.10.10.0 0.0.0.31
+network 10.10.10.32 0.0.0.31
+network 10.10.10.64 0.0.0.15
+network 10.10.10.80 0.0.0.7
+network 10.10.10.88 0.0.0.7
+network 10.10.10.96 0.0.0.7
+network 10.10.10.104 0.0.0.3
+network 10.10.10.108 0.0.0.3
+pass g0/0/1
+no auto-sum
+exit
+
+
+
+-------->MLS_K<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_K
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 11
+name IRODA1_K
+vlan 21
+name IRODA2_K
+vlan 31
+name IRODA3_K
+vlan 199
+name NATIVE/RG_K
+vlan 51
+name PORTA_K
+vlan 101
+name DOLGOZOI_WLAN_K
+vlan 201
+name VENDEG_WLAN_K
+vlan 420
+name BH_K
+
+ip dhcp snooping
+
+int ran g1/0/22, g1/1/2
+swit mod trunk
+swit noneg
+swit trunk nat vlan 199
+swit trunk all vlan 11,21,31,199,51,101,201
+exit
+
+int ran g1/1/1, g1/0/23-24
+swit mod acc 
+swit acc vlan 199
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+
+int g1/0/1
+swit mod acc 
+swit acc vlan 199
+ip dhcp snooping trust
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+
+int g1/0/12
+swit mod acc
+swit acc vlan 51
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+
+int ran g1/1/3-4, g1/0/2-11, g1/0/13-21
+swit mod acc
+swit acc vlan 420
+sh
+exit
+
+vtp ver 2
+vtp mode server
+vtp domain backup.hu.net
+vtp pass Cisco123!
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+
+-------->MLS_Iroda1_K<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_Iroda1_K
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vtp ver 2
+vtp mode client
+vtp domain backup.hu.net
+vtp pass Cisco123!
+
+ip dhcp snooping
+ip dhcp snooping vlan 11,21,31
+
+int g1/0/22
+swit mod trunk
+swit noneg
+swit trunk nat vlan 199
+swit trunk all vlan 11,21,31,199,51,101,201
+ip dhcp snooping trust
+exit
+
+int ran g1/0/1-2
+swit mode trunk
+swit trunk nat vlan 199
+swit trunk all vlan 11,21,31,199,51,101,201
+channel-g 1 mode active
+ip dhcp snooping trust
+exit
+
+int ran g1/0/3-4
+swit mode trunk
+swit trunk nat vlan 199
+swit trunk all vlan 11,21,31,199,51,101,201
+channel-g 3 mode passive
+ip dhcp snooping trust
+exit
+
+int ran g1/0/5, g1/0/9, g1/0/17
+swit mod acc
+swit acc vlan 11
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+ip dhcp snooping limit rate 5
+exit
+
+int ran g1/0/6-8, g1/0/10-16, g1/0/18-21, g1/0/23-24, g1/1/1-4
+swit mode acc
+swit acc vlan 420
+sh
+exit
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+
+-------->MLS_Iroda2_K<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_Iroda2_K
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 11
+name IRODA1_K
+vlan 21
+name IRODA2_K
+vlan 31
+name IRODA3_K
+vlan 199
+name NATIVE/RG_K
+vlan 51
+name PORTA_K
+vlan 101
+name DOLGOZOI_WLAN_K
+vlan 201
+name VENDEG_WLAN_K
+vlan 420
+name BH_K
+
+ip dhcp snooping
+ip dhcp snooping vlan 11,21,31
+
+int ran g1/0/1-2
+swit mode trunk
+swit trunk nat vlan 199
+swit trunk all vlan 11,21,31,199,51,101,201
+channel-g 2 mode active
+ip dhcp snooping trust
+exit
+
+int ran g1/0/3-4
+swit mode trunk
+swit trunk nat vlan 199
+swit trunk all vlan 11,21,31,199,51,101,201
+channel-g 1 mode passive
+ip dhcp snooping trust
+exit
+
+int ran g1/0/5, g1/0/13
+swit mod acc
+swit acc vlan 21
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+ip dhcp snooping limit rate 5
+exit
+
+int ran g1/0/6-12, g1/0/14-24, g1/1/1-4
+swit mod acc
+swit acc vlan 420
+sh
+exit
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+-------->MLS_Iroda3_K<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_Iroda3_K
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 11
+name IRODA1_K
+vlan 21
+name IRODA2_K
+vlan 31
+name IRODA3_K
+vlan 199
+name NATIVE/RG_K
+vlan 51
+name PORTA_K
+vlan 101
+name DOLGOZOI_WLAN_K
+vlan 201
+name VENDEG_WLAN_K
+vlan 420
+name BH_K
+
+ip dhcp snooping
+ip dhcp snooping vlan 11,21,31
+
+int ran g1/0/1-2
+swit mode trunk
+swit trunk nat vlan 199
+swit trunk all vlan 11,21,31,199,51,101,201
+channel-g 3 mode active
+ip dhcp snooping trust
+exit
+
+int ran g1/0/3-4
+swit mode trunk
+swit trunk nat vlan 199
+swit trunk all vlan 11,21,31,199,51,101,201
+channel-g 2 mode passive
+ip dhcp snooping trust
+exit
+
+int ran g1/0/5, g1/0/13
+swit mod acc
+swit acc vlan 31
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+ip dhcp snooping limit rate 5
+exit
+
+int ran g1/0/6-12, g1/0/14-24, g1/1/1-4
+swit mod acc
+swit acc vlan 420
+sh
+exit
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+
+_____________________________________________(っ◔◡◔)っ ♥ Debrecen ♥_____________________________________________________
+
+
+
+-------->R1_D<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host R1_D
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->R2_D<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host R2_D
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->R3_D<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host R3_D
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->MLS_D<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host MLS_D
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip routing
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+
+
+_________________________________________•?((¯°·._.• 丅Ｈ𝐞 έⓝ𝒹 •._.·°¯))؟•____________________________________________
+
+
+
+
+
+
