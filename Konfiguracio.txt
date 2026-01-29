@@ -341,13 +341,13 @@ _____________________________________________(っ◔◡◔)っ ♥ Debrecen ♥_
 
 
 
--------->R1_D<--------
+-------->R_Border_D<--------
 
 
 ena
 clo set 12:00:00 27 jan 2026 
 conf t
-host R1_D
+host R_Border_D
 banner motd "Privat Terulet!"
 no ip domain-l
 ena sec class123
@@ -376,14 +376,34 @@ transport input ssh
 exe 25
 exit
 
+int s0/2/0
+ip add 209.165.34.2 255.255.255.252
+des ISP fele
+no sh
+exit
 
--------->R2_D<--------
+int g0/0/0
+ip add 172.16.0.161 255.255.255.252
+des R_A_D fele
+no sh
+exit
+
+int g0/0/1
+ip add 172.16.0.165 255.255.255.252
+des R_B_D fele 
+no sh
+exit
+
+
+
+
+-------->R_A_D<--------
 
 
 ena
 clo set 12:00:00 27 jan 2026 
 conf t
-host R2_D
+host R_A_D
 banner motd "Privat Terulet!"
 no ip domain-l
 ena sec class123
@@ -412,14 +432,48 @@ transport input ssh
 exe 25
 exit
 
+int g0/0/0
+des MLS_D fele
+no sh
+exit
 
--------->R3_D<--------
+int g0/0/1
+ip add 172.16.0.162 255.255.255.252
+des R_Border_D fele 
+no sh
+exit
+
+int g0/0/0.12
+enc dot 12
+ip add 172.16.0.1 255.255.255.224
+des vlan 12 atjaroja
+ip helper 172.16.0.69
+int g0/0/0.22
+enc dot 22
+ip add 172.16.0.33 255.255.255.224
+des vlan 22 atjaroja
+ip helper 172.16.0.69
+int g0/0/0.32
+enc dot 32
+ip add 172.16.0.169 255.255.255.252
+des vlan 32 atjaroja
+int g0/0/0.299
+enc dot 299 native
+ip add 172.16.0.65 255.255.255.224
+des vlan 299 atjaroja
+ip helper 172.16.0.69
+exit
+
+
+
+
+-------->R_B_D<--------
 
 
 ena
 clo set 12:00:00 27 jan 2026 
 conf t
-host R3_D
+host R_B_D
 banner motd "Privat Terulet!"
 no ip domain-l
 ena sec class123
@@ -446,6 +500,33 @@ login
 login local 
 transport input ssh
 exe 25
+exit
+
+int g0/0/0
+no sh
+exit
+
+int g0/0/1
+ip add 172.16.0.166 255.255.255.252
+des R_Border_D fele 
+no sh
+exit
+
+int g0/0/1.12
+enc dot 12
+ip add 172.16.0.2 255.255.255.224
+des vlan 12 atjaroja
+ip helper 172.16.0.69
+int g0/0/1.22
+enc dot 22
+ip add 172.16.0.33 255.255.255.224
+des vlan 22 atjaroja
+ip helper 172.16.0.69
+int g0/0/1.299
+enc dot 299 native
+ip add 172.16.0.65 255.255.255.224
+des vlan 299 atjaroja
+ip helper 172.16.0.69
 exit
 
 
@@ -484,6 +565,52 @@ login local
 transport input ssh
 exe 25
 exit
+
+vlan 12
+name Iroda1
+vlan 22
+name Iroda2
+vlan 32
+name Porta
+vlan 299
+name Native
+vlan 4096
+name blackhole
+exit
+
+int rang g1/0/1-2, g1/0/22
+swit mod acc
+swit acc vlan 12
+exit
+
+int rang g1/0/13-14
+swit mod acc
+swit acc vlan 22
+exit
+
+int g1/0/21
+swit mod acc
+swit acc vlan 32
+exit
+
+int rang g1/0/10, g1/0/15, g1/0/23-24
+swit mod trunk
+swit trunk native vlan 299
+swit trunk all vlan 12,22,32,299
+exit
+
+int rang g1/0/3-9, g1/0/11-12, g1/0/17-20, g1/1/1-4
+swit mod acc
+swit acc vlan 911
+sh
+exit
+
+
+
+
+
+
+
 
 
 
