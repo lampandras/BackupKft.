@@ -1,0 +1,381 @@
+
+
+_____________________________________________(っ◔◡◔)っ ♥ Budapest ♥__________________________________________________________
+
+-------->BP_R1<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host BP_R1
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec Cisco123!
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->BP_R2<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host BP_R2
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec Cisco123!
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+-------->BP_Sw_Szerverszoba<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host BP_Sw_Szerverszoba
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec Cisco123!
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 10
+name IRODA1
+vlan 20
+name IRODA2
+vlan 30
+name HR
+vlan 40
+name PORTA
+vlan 50
+name CEO
+vlan 60
+name DOLGOZOI_WIFI
+vlan 70
+name VENDEG_WIFI
+vlan 99
+name NATIVE
+vlan 999
+name BH
+exit
+
+vtp ver 2
+vtp mode server
+vtp domain backup.hu.net
+vtp pass cisco123
+
+ip dhcp snooping
+
+int rang g0/1-2
+swit mod trunk
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,99
+exit
+
+
+int rang f0/2-4
+swit mod trunk
+swit noneg
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,99
+exit
+
+int f0/1
+swit mod acc
+swit acc vlan 99
+
+int f0/24
+swit mod acc
+swit acc vlan 40
+exit
+
+int ran f0/21-22
+swit mod acc 
+swit acc vlan 99
+exit
+
+int f0/23
+swit mod acc 
+swit acc vlan 99
+ip dhcp snooping trust
+exit
+
+int rang f0/5-20
+swit mod acc
+swit acc vlan 999
+sh
+exit
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+-------->BP_Sw_Irodak<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host BP_Sw_Irodak
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec Cisco123!
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int g0/1
+
+vtp ver 2
+vtp mode client
+vtp domain backup.hu.net
+vtp pass cisco123
+
+int ran g0/1-2
+swit mod trunk
+swit noneg
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,99
+ip dhcp snooping trust
+exit
+
+int range f0/1-12
+swit mod acc
+swit acc vlan 10
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+int range f0/13-24
+swit mod acc
+swit acc vlan 20
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+-------->BP_Sw_HR<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host BP_Sw_HR
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec Cisco123!
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vtp ver 2
+vtp mode client
+vtp domain backup.hu.net
+vtp pass cisco123
+
+int ran g0/1-2
+swit mod trunk
+swit noneg
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,99
+ip dhcp snooping trust
+exit
+
+int range f0/1-24
+swit mod acc
+swit acc vlan 30
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+-------->BP_Sw_CEO<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host BP_Sw_CEO
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec Cisco123!
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vtp ver 2
+vtp mode client
+vtp domain backup.hu.net
+vtp pass cisco123
+
+int g0/1
+swit mod trunk
+swit noneg
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,99
+ip dhcp snooping trust
+exit
+
+int range f0/1-3
+swit mod acc
+swit acc vlan 10
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+int range f0/4-24, g0/2
+swit mod acc
+swit acc vlan 999
+sh
+exit
+_____________________________________________(っ◔◡◔)っ ♥ Kecskemét (Közepes) ♥_____________________________________________________
+
+_____________________________________________(っ◔◡◔)っ ♥ Kecskemét (HQ) ♥_____________________________________________________
+
+_____________________________________________(っ◔◡◔)っ ♥ Kecskemét (Kicsi) ♥_____________________________________________________
+
+
+_________________________________________•?((¯°·._.• 丅Ｈ𝐞 έⓝ𝒹 •._.·°¯))؟•____________________________________________
+
+
+
+
+
+
