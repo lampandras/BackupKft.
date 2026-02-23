@@ -1,0 +1,1854 @@
+
+
+_____________________________________________(っ◔◡◔)っ ♥ Budapest ♥__________________________________________________________
+
+-------->BP_R1<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host BP_R1
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec cisco123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int g0/0/0.10
+enc dot 10
+ip add 10.10.10.81 255.255.255.240
+ip helper 10.10.10.78
+standby 1 ip 10.10.10.83
+standby 1 priority 150
+standby 1 preempt
+des Vlan 10 Gateway
+exit
+
+int g0/0/0.20
+enc dot 20
+ip add 10.10.10.97 255.255.255.240
+ip helper 10.10.10.78
+standby 2 ip 10.10.10.99
+standby 2 priority 150
+standby 2 preempt
+des Vlan 20 Gateway
+exit
+
+int g0/0/0.30
+enc dot 30
+ip add 10.10.10.113 255.255.255.240
+ip helper 10.10.10.78
+standby 3 ip 10.10.10.115
+standby 3 priority 150
+standby 3 preempt
+des Vlan 30 Gateway
+exit
+
+int g0/0/0.40
+enc dot 40
+ip add 10.10.10.161 255.255.255.248
+ip helper 10.10.10.78
+standby 4 ip 10.10.10.163
+standby 4 priority 150
+standby 4 preempt
+des Vlan 40 Gateway
+exit
+
+int g0/0/0.50
+enc dot 50
+ip add 10.10.10.129 255.255.255.240
+ip helper 10.10.10.78
+standby 5 ip 10.10.10.131
+standby 5 priority 150
+standby 5 preempt
+des Vlan 50 Gateway
+exit
+
+int g0/0/0.99
+enc dot 99 nat
+ip add 10.10.10.65 255.255.255.240
+standby 9 ip 10.10.10.67
+standby 9 priority 150
+standby 9 preempt
+des Management Vlan
+exit
+
+int g0/0/0.60
+enc dot 60
+ip add 10.10.10.145 255.255.255.240
+standby 6 ip 10.10.10.147
+standby 6 priority 150
+standby 6 preempt
+des CEO_WIFI Gateway
+exit
+
+int g0/0/0.70
+enc dot 70
+ip add 10.10.10.1 255.255.255.240
+standby 7 ip 10.10.10.3
+standby 7 priority 150
+standby 7 preempt
+des DOLGOZOI_WIFI Gateway
+exit
+
+int g0/0/0.80
+enc dot 80
+ip add 10.10.10.33 255.255.255.240
+standby 8 ip 10.10.10.35
+standby 8 priority 150
+standby 8 preempt
+des VENDEG_WIFI Gateway
+exit
+
+int g0/0/0
+no sh
+exit
+
+int se0/1/1
+ip add 209.165.67.2 255.255.255.252
+des Towards ISP1
+no sh
+exit
+
+
+-------->BP_R2<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host BP_R2
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec cisco123
+security pass min 8
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int g0/0/0.10
+enc dot 10
+ip add 10.10.10.82 255.255.255.240
+ip helper 10.10.10.78
+standby 1 ip 10.10.10.83
+des Vlan 10 Gateway
+exit
+
+int g0/0/0.20
+enc dot 20
+ip add 10.10.10.98 255.255.255.240
+ip helper 10.10.10.78
+standby 2 ip 10.10.10.99
+des Vlan 20 Gateway
+exit
+
+int g0/0/0.30
+enc dot 30
+ip add 10.10.10.114 255.255.255.240
+ip helper 10.10.10.78
+standby 3 ip 10.10.10.115
+des Vlan 30 Gateway
+exit
+
+int g0/0/0.40
+enc dot 40
+ip add 10.10.10.162 255.255.255.248
+ip helper 10.10.10.78
+standby 4 ip 10.10.10.163
+des Vlan 40 Gateway
+exit
+
+int g0/0/0.50
+enc dot 50
+ip add 10.10.10.130 255.255.255.240
+ip helper 10.10.10.78
+standby 5 ip 10.10.10.131
+des Vlan 50 Gateway
+exit
+
+int g0/0/0.99
+enc dot 99 nat
+ip add 10.10.10.66 255.255.255.240
+standby 9 ip 10.10.10.67
+des Management Vlan
+exit
+
+int g0/0/0.60
+enc dot 60
+ip add 10.10.10.146 255.255.255.240
+standby 6 ip 10.10.10.147
+des CEO_WIFI Gateway
+exit
+
+int g0/0/0.70
+enc dot 70
+ip add 10.10.10.2 255.255.255.240
+standby 7 ip 10.10.10.3
+des DOLGOZOI_WIFI Gateway
+exit
+
+int g0/0/0.80
+enc dot 80
+ip add 10.10.10.34 255.255.255.240
+standby 8 ip 10.10.10.35
+des VENDEG_WIFI Gateway
+exit
+
+int g0/0/0
+no sh
+exit
+
+int se0/1/0
+ip add 209.165.67.6 255.255.255.252
+des Towards ISP2
+no sh
+exit
+
+
+
+
+-------->BP_Sw_Szerverszoba<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host BP_Sw_Szerverszoba
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec cisco123
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 10
+name IRODA1
+vlan 20
+name IRODA2
+vlan 30
+name HR
+vlan 40
+name PORTA
+vlan 50
+name CEO
+vlan 60
+name CEO_WIFI
+vlan 70
+name DOLGOZOI_WIFI
+vlan 80
+name VENDEG_WIFI
+vlan 99
+name NATIVE
+vlan 999
+name BH
+exit
+
+ip dhcp snooping
+
+int rang f0/1-2
+channel-g 1 mode active
+exit
+
+int port-channel 1
+swit mod trunk
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,80,99
+exit
+
+int rang f0/3-4
+channel-g 3 mode passive
+exit
+
+int port-channel 3
+swit mod trunk
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,80,99
+exit
+
+int rang f0/22-24, g0/2, f0/5-7
+swit mod acc
+swit acc vlan 99
+exit
+
+int f0/1-4, f0/24
+ip dhcp snooping trust
+exit
+
+int rang f0/8-21
+swit mod acc
+swit acc vlan 999
+sh
+exit
+
+int range f0/5-7
+swit mod trunk
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,80,99
+exit
+
+int g0/1
+ip dhcp snooping
+swit mod trunk
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,80,99
+exit
+
+int vlan 99
+no sh
+ip add 10.10.10.68 255.255.255.224
+desc Management Vlan
+exit
+
+ip def 10.10.10.67
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+-------->BP_Sw_Irodak<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host BP_Sw_Irodak
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec cisco123
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 10
+name IRODA1
+vlan 20
+name IRODA2
+vlan 30
+name HR
+vlan 40
+name PORTA
+vlan 50
+name CEO
+vlan 60
+name CEO_WIFI
+vlan 70
+name DOLGOZOI_WIFI
+vlan 80
+name VENDEG_WIFI
+vlan 99
+name NATIVE
+vlan 999
+name BH
+exit
+
+ip dhcp snooping
+
+int rang f0/1-2
+ip dhcp snooping trust
+channel-g 2 mode active
+exit
+
+int port-channel 2
+swit mod trunk
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,80,99
+exit
+
+int rang f0/3-4
+ip dhcp snooping trust
+channel-g 1 mode passive
+exit
+
+int port-channel 1
+swit mod trunk
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,80,99
+exit
+
+int rang f0/5-11
+swit mod acc
+swit acc vlan 10
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+
+int rang f0/12-18
+swit mod acc
+swit acc vlan 20
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+
+int rang f0/19-24
+swit mod acc
+swit acc vlan 30
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+
+int g0/1
+swit mod trunk
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,80,99
+exit
+
+int vlan 99
+no sh
+ip add 10.10.10.69 255.255.255.224
+desc Management Vlan
+exit
+
+ip def 10.10.10.67
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+
+-------->BP_Sw_CEO<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host BP_Sw_CEO
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec cisco123
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 10
+name IRODA1
+vlan 20
+name IRODA2
+vlan 30
+name HR
+vlan 40
+name PORTA
+vlan 50
+name CEO
+vlan 60
+name CEO_WIFI
+vlan 70
+name DOLGOZOI_WIFI
+vlan 80
+name VENDEG_WIFI
+vlan 99
+name NATIVE
+vlan 999
+name BH
+exit
+
+ip dhcp snooping
+
+int rang f0/1-2
+ip dhcp snooping trust
+channel-g 3 mode active
+exit
+
+int port-channel 3
+swit mod trunk
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,80,99
+exit
+
+int rang f0/3-4
+ip dhcp snooping trust
+channel-g 2 mode passive
+exit
+
+int port-channel 2
+swit mod trunk
+swit trunk nat vlan 99
+swit trunk all vlan 10,20,30,40,50,60,70,80,99
+exit
+
+int rang f0/5-7
+swit mod acc
+swit acc vlan 50
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+
+int f0/24
+swit mod acc
+swit acc vlan 40
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+
+int rang f0/8-23, g0/1-2
+swit mod acc
+swit acc vlan 999
+sh
+exit
+
+int vlan 99
+no sh
+ip add 10.10.10.70 255.255.255.224
+desc Management Vlan
+exit
+
+ip def 10.10.10.67
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+
+
+_____________________________________________(っ◔◡◔)っ ♥ Győr ♥_____________________________________________________
+
+
+-------->Győr_R<--------
+
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host Gyor_R
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec cisco123
+service pass
+
+ip domain-name codelinks.hu
+cr k g rsa
+y
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+
+ip dhcp exc 172.16.20.1
+ip dhcp exc 172.16.20.33
+ip dhcp exc 172.16.20.65
+ip dhcp exc 172.16.20.81
+ip dhcp exc 172.16.20.97
+
+ip dhcp pool vlan_240
+network 172.16.20.0 255.255.255.224
+default 172.16.20.1
+domain codelinks.hu
+exit
+
+ip dhcp pool vlan_250
+network 172.16.20.32 255.255.255.224
+default 172.16.20.33
+domain codelinks.hu
+exit
+
+ip dhcp pool vlan_211
+network 172.16.20.64 255.255.255.240
+default 172.16.20.65
+domain codelinks.hu
+exit
+
+ip dhcp pool vlan_212
+network 172.16.20.80 255.255.255.240
+default 172.16.20.81
+domain codelinks.hu
+exit
+
+ip dhcp pool vlan_220
+network 172.16.20.96 255.255.255.240
+default 172.16.20.97
+domain codelinks.hu
+exit
+
+int g0/0/0.211
+enc dot 211
+ip add 172.16.20.65 255.255.255.240
+desc Vlan 211 Gateway
+exit
+
+int g0/0/0.212
+enc dot 212
+ip add 172.16.20.81 255.255.255.240
+desc Vlan 212 Gateway
+exit
+
+int g0/0/0.220
+enc dot 220
+ip add 172.16.20.97 255.255.255.240
+desc Vlan 220 Gateway
+exit
+
+int g0/0/0.230
+enc dot 230
+ip add 172.16.20.129 255.255.255.240
+desc Vlan 230 Gateway
+exit
+
+int g0/0/0.240
+enc dot 240
+ip add 172.16.20.1 255.255.255.224
+desc Vlan 240 Gateway
+exit
+
+int g0/0/0.250
+enc dot 250
+ip add 172.16.20.33 255.255.255.224
+desc Vlan 250 Gateway
+exit
+
+int g0/0/0.299
+enc dot 299 nat
+ip add 172.16.20.113 255.255.255.240
+desc Management Vlan
+exit
+
+int g0/0/0
+no sh
+exit
+
+
+
+-------->Győr_Sw1<--------
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host Gyor_Sw1
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec cisco123
+service pass
+
+ip domain-name codelinks.hu
+cr k g rsa
+y
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 211
+name Gy_IRODA1
+vlan 212
+name Gy_IRODA2
+vlan 220
+name Gy_HR
+vlan 230
+name Gy_PORTA
+vlan 240
+name Gy_DOLGOZOI_WIFI
+vlan 250
+name Gy_VENDEG_WIFI
+vlan 299
+name Gy_NATIVE
+vlan 666
+name Gy_BH
+exit
+
+ip dhcp snooping
+
+int g0/1
+swit mode trunk
+swit trunk nat vlan 299
+swit trunk all vlan 211,212,220,230,240,250,299
+ip dhcp snooping trust
+exit
+
+int range f0/1-2
+ip dhcp snooping trust
+channel-g 1 mode desi
+exit
+
+int port 1
+swit mode trunk
+swit noneg
+swit trunk nat vlan 299
+swit trunk all vlan 211,212,220,230,240,250,299
+exit
+
+int range f0/3-4
+ip dhcp snooping trust
+channel-g 3 mode auto
+exit
+
+int port 3
+swit mode trunk
+swit noneg
+swit trunk nat vlan 299
+swit trunk all vlan 211,212,220,230,240,250,299
+exit
+
+int range f0/23-24
+swit mode trunk
+swit trunk nat vlan 299
+swit trunk all vlan 211,212,220,230,240,250,299
+exit
+
+int g0/2
+swit mode acc
+swit acc vlan 299
+exit
+
+int f0/5
+swit mod acc 
+swit acc vlan 230
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+exit
+
+int rang f0/6-22
+swit mod acc
+swit acc vlan 666
+sh
+exit
+
+int vlan 299
+ip add 172.16.20.126 255.255.255.240
+des Management Vlan
+exit
+
+ip def 172.16.20.113
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+
+-------->Győr_Sw2<--------
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host Gyor_Sw2
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec cisco123
+service pass
+
+ip domain-name codelinks.hu
+cr k g rsa
+y
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 211
+name Gy_IRODA1
+vlan 212
+name Gy_IRODA2
+vlan 220
+name Gy_HR
+vlan 230
+name Gy_PORTA
+vlan 240
+name Gy_DOLGOZOI_WIFI
+vlan 250
+name Gy_VENDEG_WIFI
+vlan 299
+name Gy_NATIVE
+vlan 666
+name Gy_BH
+exit
+
+ip dhcp snooping
+
+int range f0/1-2
+ip dhcp snooping trust
+channel-g 2 mode desi
+exit
+
+int port 2
+swit mode trunk
+swit noneg
+swit trunk nat vlan 299
+swit trunk all vlan 211,212,220,230,240,250,299
+exit
+
+int range f0/3-4
+ip dhcp snooping trust
+channel-g 1 mode auto
+exit
+
+int port 1
+swit mode trunk
+swit noneg
+swit trunk nat vlan 299
+swit trunk all vlan 211,212,220,230,240,250,299
+exit
+
+
+int range f0/5-7
+swit mod acc 
+swit acc vlan 212
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+ip dhcp snooping limit rat 5
+exit
+
+int rang f0/8-24, g0/1-2
+swit mod acc
+swit acc vlan 666
+sh
+exit
+
+int vlan 299
+ip add 172.16.20.125 255.255.255.240
+des Management Vlan
+exit
+
+ip def 172.16.20.113
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+
+-------->Győr_Sw3<--------
+
+ena
+clo set 12:00:00 11 feb 2026 
+conf t
+host Gyor_Sw3
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec cisco123
+service pass
+
+ip domain-name codelinks.hu
+cr k g rsa
+y
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 211
+name Gy_IRODA1
+vlan 212
+name Gy_IRODA2
+vlan 220
+name Gy_HR
+vlan 230
+name Gy_PORTA
+vlan 240
+name Gy_DOLGOZOI_WIFI
+vlan 250
+name Gy_VENDEG_WIFI
+vlan 299
+name Gy_NATIVE
+vlan 666
+name Gy_BH
+exit
+
+ip dhcp snooping
+
+int range f0/1-2
+ip dhcp snooping trust
+channel-g 3 mode desi
+exit
+
+int port 3
+swit mode trunk
+swit noneg
+swit trunk nat vlan 299
+swit trunk all vlan 211,212,220,230,240,250,299
+exit
+
+int range f0/3-4
+ip dhcp snooping trust
+channel-g 2 mode auto
+exit
+
+int port 2
+swit mode trunk
+swit noneg
+swit trunk nat vlan 299
+swit trunk all vlan 211,212,220,230,240,250,299
+exit
+
+int range f0/5-7
+swit mod acc 
+swit acc vlan 220
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+ip dhcp snooping limit rat 5
+exit
+
+int range f0/15-18
+swit mod acc 
+swit acc vlan 211
+swit port-sec max 1
+swit port-sec mac sti
+swit port-sec viol shut
+ip dhcp snooping limit rat 5
+exit
+
+int rang f0/8-14, f0/19-24, g0/1-2
+swit mod acc 
+swit acc vlan 666
+sh
+exit
+
+int vlan 299
+ip add 172.16.20.124 255.255.255.240
+des Management Vlan
+exit
+
+ip def 172.16.20.113
+
+spanning-tree portfast bpduguard default
+spanning-tree mode rapid-pvst
+
+
+_____________________________________________(っ◔◡◔)っ ♥ Kecskemét (HQ) ♥_____________________________________________________
+
+-------->KHQ_R1<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host KHQ_R1
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name codelinks.hu
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int g0/0/0
+no sh
+exit
+
+int s0/1/1
+ip add 209.165.67.13 255.255.255.252
+clock rate 4000000
+no sh
+exit
+
+int s0/1/0
+ip add 172.16.1.2 255.255.255.252
+no sh
+exit
+
+int s0/2/0
+ip add 172.16.1.10 255.255.255.252
+no sh
+exit
+
+int g0/0/0.110
+enc dot 110
+ip add 172.16.10.97 255.255.255.240
+ip helper 172.16.10.3
+standby 1 ip 172.16.10.99
+standby 1 priority 150
+standby 1 preempt
+exit
+
+int g0/0/0.120
+enc dot 120
+ip add 172.16.10.145 255.255.255.240
+ip helper 172.16.10.3
+standby 2 ip 172.16.10.147
+standby 2 priority 150
+standby 2 preempt
+exit
+
+int g0/0/0.130
+enc dot 130
+ip add 172.16.10.113 255.255.255.240
+ip helper 172.16.10.3
+standby 3 ip 172.16.10.115
+standby 3 priority 150
+standby 3 preempt
+exit
+
+int g0/0/0.140
+enc dot 140
+ip add 172.16.10.129 255.255.255.240
+ip helper 172.16.10.3
+standby 4 ip 172.16.10.131
+standby 4 priority 150
+standby 4 preempt
+exit
+
+int g0/0/0.150
+enc dot 150
+ip add 172.16.10.177 255.255.255.248
+ip helper 172.16.10.3
+standby 5 ip 172.16.10.179
+standby 5 priority 150
+standby 5 preempt
+exit
+
+int g0/0/0.160
+enc dot 160 native
+ip add 172.16.10.1 255.255.255.224
+ip helper 172.16.10.3
+standby 6 ip 172.16.10.30
+standby 6 priority 150
+standby 6 preempt
+exit
+
+int g0/0/0.170
+enc dot 170
+ip add 172.16.10.33 255.255.255.224
+ip helper 172.16.10.3
+standby 7 ip 172.16.10.35
+standby 7 priority 150
+standby 7 preempt
+exit
+
+int g0/0/0.180
+enc dot 180
+ip add 172.16.10.161 255.255.255.240
+ip helper 172.16.10.3
+standby 8 ip 172.16.10.163
+standby 8 priority 150
+standby 8 preempt
+exit
+
+int g0/0/0.190
+enc dot 190
+ip add 172.16.10.65 255.255.255.224
+ip helper 172.16.10.3
+standby 9 ip 172.16.10.67
+standby 9 priority 150
+standby 9 preempt
+exit
+
+
+
+
+
+
+
+
+
+
+
+
+-------->KHQ_R2<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host KHQ_R2
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name codelinks.hu
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int g0/0/0
+no sh
+exit
+
+int s0/1/1
+ip add 172.16.1.6 255.255.255.252
+no sh
+exit
+
+int s0/1/0
+ip add 209.165.67.1 255.255.255.252
+clock rate 4000000
+no sh
+exit
+
+int s0/2/1
+ip add 172.16.1.13 255.255.255.252
+clock rate 4000000
+no sh
+exit
+
+int g0/0/0.110
+enc dot 110
+ip add 172.16.10.98 255.255.255.240
+ip helper 172.16.10.3
+standby 1 ip 172.16.10.99
+standby 1 priority 200
+standby 1 preempt
+exit
+
+int g0/0/0.120
+enc dot 120
+ip add 172.16.10.146 255.255.255.240
+ip helper 172.16.10.3
+standby 2 ip 172.16.10.147
+standby 2 priority 200
+standby 2 preempt
+exit
+
+int g0/0/0.130
+enc dot 130
+ip add 172.16.10.114 255.255.255.240
+ip helper 172.16.10.3
+standby 3 ip 172.16.10.115
+standby 3 priority 200
+standby 3 preempt
+exit
+
+int g0/0/0.140
+enc dot 140
+ip add 172.16.10.130 255.255.255.240
+ip helper 172.16.10.3
+standby 4 ip 172.16.10.131
+standby 4 priority 200
+standby 4 preempt
+exit
+
+int g0/0/0.150
+enc dot 150
+ip add 172.16.10.178 255.255.255.248
+ip helper 172.16.10.3
+standby 5 ip 172.16.10.179
+standby 5 priority 200
+standby 5 preempt
+exit
+
+int g0/0/0.160
+enc dot 160 native
+ip add 172.16.10.2 255.255.255.224
+ip helper 172.16.10.3
+standby 6 ip 172.16.10.30
+standby 6 priority 200
+standby 6 preempt
+exit
+
+int g0/0/0.170
+enc dot 170
+ip add 172.16.10.34 255.255.255.224
+ip helper 172.16.10.3
+standby 7 ip 172.16.10.35
+standby 7 priority 200
+standby 7 preempt
+exit
+
+int g0/0/0.180
+enc dot 180
+ip add 172.16.10.162 255.255.255.240
+ip helper 172.16.10.3
+standby 8 ip 172.16.10.163
+standby 8 priority 200
+standby 8 preempt
+exit
+
+int g0/0/0.190
+enc dot 190
+ip add 172.16.10.66 255.255.255.224
+ip helper 172.16.10.3
+standby 9 ip 172.16.10.67
+standby 9 priority 200
+standby 9 preempt
+exit
+
+
+-------->KHQ_Root_Sw<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host KHQ_Root_Sw
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+y
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 110
+name iroda1
+vlan 120
+name iroda2
+vlan 130
+name iroda3
+vlan 140
+name CEO
+vlan 150
+name porta
+vlan 160
+name NATIVE
+vlan 199
+name BH
+exit
+
+ip def 172.16.10.1
+
+int vlan 160
+ip add 172.16.10.11 255.255.255.224
+no sh
+exit
+
+int rang f0/1-2 
+channel-g 1 mod desirable
+swit mod trunk
+swit nonego
+swit trunk nat vlan 160
+swit trunk all vlan 110,120,130,140,150,160
+exit
+
+int rang f0/3-4
+channel-g 3 mod auto 
+swit mod trunk
+swit nonego
+swit trunk nat vlan 160
+swit trunk all vlan 110,120,130,140,150,160
+exit
+
+int rang f0/23-24, f0/21, g0/1-2
+swit mod trunk
+swit nonego
+swit trunk nat vlan 160
+swit trunk all vlan 110,120,130,140,150,160
+exit
+
+int f0/22
+swit mod acc
+swit acc vlan 160
+exit
+
+
+int rang f0/5-20
+swit mod acc
+swit acc vlan 199
+sh
+exit
+
+vtp mod server
+vtp domain codelinks.hu
+vtp ver 2
+vtp pass cisco123
+
+spanning-tree mode rapid-pvst
+spanning-tree portfast bpduguard def
+spanning-tree extend system-id
+
+ip arp ins validate dst src ip
+ip arp ins vlan 110,120,130,140,150,170,180,190
+
+
+
+
+-------->KHQ_CEO_Sw<--------
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host KHQ_CEO_Sw
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+y
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vtp mod client
+vtp domain codelinks.hu
+vtp ver 2
+vtp pass cisco123
+
+ip def 172.16.10.1
+
+int vlan 260
+ip add 172.16.10.12 255.255.255.224
+no sh
+exit
+
+int rang f0/1-2 
+channel-g 2 mod desirable
+swit mod trunk
+swit nonego
+swit trunk nat vlan 160
+swit trunk all vlan 110,120,130,140,150,160
+exit
+
+int rang f0/3-4
+channel-g 1 mod auto 
+swit mod trunk
+swit nonego
+swit trunk nat vlan 160
+swit trunk all vlan 110,120,130,140,150,160
+exit
+
+int f0/24 
+swit mod trunk
+swit nonego
+swit trunk nat vlan 160
+swit trunk all vlan 110,120,130,140,150,160
+exit
+
+int f0/15
+swit mod acc
+swit acc vlan 150
+swit port-sec mac-add sticky
+swit port-sec max 1
+swit port-sec viol shut
+exit
+
+int rang f0/5-6
+swit mod acc
+swit acc vlan 140
+swit port-sec mac-add sticky
+swit port-sec max 1
+swit port-sec viol shut
+exit
+
+int rang f0/7-14, f0/16-23, g0/1-2
+swit mod acc
+swit acc vlan 199
+sh
+exit
+
+spanning-tree mode rapid-pvst
+spanning-tree portfast bpduguard def
+
+ip arp ins validate dst src ip
+ip arp ins vlan 110,120,130,140,150,170,180,190
+
+
+
+
+-------->KHQ_I_Sw<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host KHQ_I_Sw
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+y
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vtp mod client
+vtp domain codelinks.hu
+vtp ver 2
+vtp pass cisco123
+
+ip def 172.16.10.1
+
+int vlan 260
+ip add 172.16.10.13 255.255.255.224
+no sh
+exit
+
+int rang f0/1-2 
+channel-g 3 mod desirable
+swit mod trunk
+swit nonego
+swit trunk nat vlan 160
+swit trunk all vlan 110,120,130,140,150,160
+exit
+
+int rang f0/3-4
+channel-g 2 mod auto 
+swit mod trunk
+swit nonego
+swit trunk nat vlan 160
+swit trunk all vlan 110,120,130,140,150,160
+exit
+
+int rang f0/5-11
+swit mod acc
+swit acc vlan 110
+swit port-sec mac-add sticky
+swit port-sec max 1
+swit port-sec viol shut
+exit
+
+int rang f0/12-14
+swit mod acc
+swit acc vlan 120
+swit port-sec mac-add sticky
+swit port-sec max 1
+swit port-sec viol shut
+exit
+
+int rang f0/15-19
+swit mod acc
+swit acc vlan 130
+swit port-sec mac-add sticky
+swit port-sec max 1
+swit port-sec viol shut
+exit
+
+int rang f0/20-24, g0/1-2
+swit mod acc
+swit acc vlan 199
+sh
+exit
+
+spanning-tree mode rapid-pvst
+spanning-tree portfast bpduguard def
+
+ip arp ins validate dst src ip
+ip arp ins vlan 110,120,130,140,150,170,180,190
+
+
+_____________________________________________(っ◔◡◔)っ ♥ Baja ♥_____________________________________________________
+
+-------->Baja_R<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host Baja_R
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+security pass min 8
+service pass
+
+ip domain-name codelinks.hu
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int g0/0/0
+no sh
+exit
+
+ip dhcp excl 172.16.30.1
+ip dhcp excl 172.16.30.9
+ip dhcp excl 172.16.30.17
+
+ip dhcp pool iroda1_pool
+Network 172.16.30.0 255.255.255.248
+def 172.16.30.1
+domain backup.hu.net
+dns
+
+ip dhcp pool iroda2_pool
+Network 172.167.30.8 255.255.255.248
+def 172.16.30.9
+domain backup.hu.net
+dns
+
+ip dhcp pool CEO_pool
+Network 172.16.30.16 255.255.255.248
+def 172.16.30.17
+domain backup.hu.net
+dns
+
+int g0/0/0.310
+enc dot 310
+ip add 172.16.30.1 255.255.255.248
+des vlan IRODA1
+
+int g0/0/0.320
+enc dot 320
+ip add 172.16.30.9 255.255.255.248
+des vlan IRODA2
+
+int g0/0/0.330
+enc dot 330
+ip add 172.16.30.17 255.255.255.248
+des vlan CEO
+
+int g0/0/0.340
+enc dot 340 native
+ip add 172.16.30.25 255.255.255.248
+des vlan NATIVE
+exit
+
+
+
+
+
+-------->Baja_Sw<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host Baja_Sw
+banner motd "Privat Terulet!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip domain-name backup.hu.net
+cr k g rsa
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+vlan 310
+NAME IRODA1
+vlan 320
+NAME IRODA2
+vlan 330
+NAME CEO
+vlan 340
+NAME NATIVE
+vlan 366 
+NAME BH
+exit
+
+ip def 172.16.30.25
+
+int vlan 340
+ip add 172.16.30.27 255.255.255.248
+no sh
+exit
+
+
+int rang f0/1-3
+swit mod acc
+swit acc vlan 310
+exit
+
+int rang f0/7-9
+swit mod acc
+swit acc vlan 320
+exit
+
+int rang f0/16-17
+swit mod acc
+swit acc vlan 330
+exit
+
+int f0/5
+swit mod acc
+swit acc vlan 340
+exit
+
+int rang g0/1-2
+swit mod trunk
+swit trunk nat vlan 340
+swit trunk all vlan 310,320,330,340
+exit
+
+int rang f0/7-21
+swit mod acc 
+swit acc vlan 366
+sh
+exit
+
+
+
+
+
+
+_________________________________________•?((¯°·._.• 丅Ｈ𝐞 έⓝ𝒹 •._.·°¯))؟•____________________________________________
+
+
+
+
+
+
