@@ -108,7 +108,7 @@ exit
 
 int g0/0/0.70
 enc dot 70
-ip add 10.10.10.1 255.255.255.240
+ip add 10.10.10.1 255.255.255.224
 standby 7 ip 10.10.10.3
 standby 7 priority 150
 standby 7 preempt
@@ -117,7 +117,7 @@ exit
 
 int g0/0/0.80
 enc dot 80
-ip add 10.10.10.33 255.255.255.240
+ip add 10.10.10.33 255.255.255.224
 standby 8 ip 10.10.10.35
 standby 8 priority 150
 standby 8 preempt
@@ -133,6 +133,10 @@ ip add 209.165.67.2 255.255.255.252
 des Towards ISP1
 no sh
 exit
+
+
+ 
+
 
 
 -------->BP_R2<--------
@@ -227,14 +231,14 @@ exit
 
 int g0/0/0.70
 enc dot 70
-ip add 10.10.10.2 255.255.255.240
+ip add 10.10.10.2 255.255.255.224
 standby 7 ip 10.10.10.3
 des DOLGOZOI_WIFI Gateway
 exit
 
 int g0/0/0.80
 enc dot 80
-ip add 10.10.10.34 255.255.255.240
+ip add 10.10.10.34 255.255.255.224
 standby 8 ip 10.10.10.35
 des VENDEG_WIFI Gateway
 exit
@@ -247,6 +251,21 @@ int se0/1/0
 ip add 209.165.67.6 255.255.255.252
 des Towards ISP2
 no sh
+exit
+
+router bgp 100
+bgp router-id 2.2.2.2
+neighbour 209.165.67.5 remote-as 200
+address-family ipv4 uni
+network 10.10.10.0 mask 255.255.255.224
+network 10.10.10.32 mask 255.255.255.224
+network 10.10.10.64 mask 255.255.255.240
+network 10.10.10.80 mask 255.255.255.240
+network 10.10.10.96 mask 255.255.255.240
+network 10.10.10.112 mask 255.255.255.240
+network 10.10.10.128 mask 255.255.255.240
+network 10.10.10.144 mask 255.255.255.240
+network 10.10.10.160 mask 255.255.255.252
 exit
 
 
@@ -751,13 +770,13 @@ exit
 
 router ospf 1
 router-id 3.3.3.3
-network 172.16.20.0 0.0.0.31 area 1
-network 172.16.20.32 0.0.0.31 area 1
-network 172.16.20.64 0.0.0.15 area 1
+network 172.16.20.0 0.0.0.31 area 2
+network 172.16.20.32 0.0.0.31 area 2
+network 172.16.20.64 0.0.0.15 area 2
 network 172.16.20.80 0.0.0.15 area 1
-network 172.16.20.96 0.0.0.15 area 1
-network 172.16.20.112 0.0.0.15 area 1
-network 172.16.20.128 0.0.0.3 area 1
+network 172.16.20.96 0.0.0.15 area 2
+network 172.16.20.112 0.0.0.15 area 2
+network 172.16.20.128 0.0.0.3 area 2
 network 172.16.1.0 0.0.0.3 area 0
 network 172.16.1.4 0.0.0.3 area 0
 pass g0/0/0
@@ -1251,6 +1270,61 @@ standby 9 preempt
 desc Vlan 190 Gateway
 exit
 
+int se0/1/0
+ip add 172.16.1.1 255.255.255.252
+clo rat 4000000
+desc Towards Gyor_R
+no sh
+exit
+
+int se0/2/0
+ip add 172.16.1.9 255.255.255.252
+clo rat 4000000
+desc Towards Baja_R
+no sh
+exit
+
+int se0/1/1
+ip add 209.165.67.10 255.255.255.252
+desc Towards ISP1
+no sh
+exit
+
+router bgp 300
+bgp router-id 1.1.1.1
+neighbour 209.165.67.9 remote-as 200
+address-family ipv4 uni
+network 172.16.10.0 mask 255.255.255.224
+network 172.16.10.32 mask 255.255.255.224
+network 172.16.10.64 mask 255.255.255.224
+network 172.16.10.96 mask 255.255.255.240
+network 172.16.10.112 mask 255.255.255.240
+network 172.16.10.128 mask 255.255.255.240
+network 172.16.10.144 mask 255.255.255.240
+network 172.16.10.160 mask 255.255.255.240
+network 172.16.10.176 mask 255.255.255.248
+network 172.16.1.0 mask 255.255.255.252
+network 172.16.1.8 mask 255.255.255.252
+exit
+
+
+router ospf 1
+router-id 1.1.1.1
+netw 172.16.10.0 0.0.0.31 area 1
+netw 172.16.10.32 0.0.0.31 area 1
+netw 172.16.10.64 0.0.0.31 area 1
+netw 172.16.10.96 0.0.0.15 area 1
+netw 172.16.10.112 0.0.0.15 area 1
+netw 172.16.10.128 0.0.0.15 area 1
+netw 172.16.10.144 0.0.0.15 area 1
+netw 172.16.10.160 0.0.0.15 area 1
+netw 172.16.10.176 0.0.0.7 area 1
+netw 172.16.1.0 0.0.0.3 area 0
+netw 172.16.1.8 0.0.0.3 area 0
+red bgp 300
+pass g0/0/0
+pass se0/1/1
+exit
 
 
 
@@ -1404,7 +1478,62 @@ standby 9 preempt
 desc Vlan 190 Gateway
 exit
 
+int se0/1/1
+ip add 172.16.1.5 255.255.255.252
+clo rat 4000000
+desc Towards Gyor_R
+no sh
+exit
 
+int se0/2/1
+ip add 172.16.1.13 255.255.255.252
+clo rat 4000000
+desc Towards Baja_R
+no sh
+exit
+
+int se0/1/0
+ip add 209.165.67.14 255.255.255.252
+desc Towards ISP2
+no sh
+exit
+
+
+router bgp 300
+bgp router-id 2.2.2.2
+neighbour 209.165.67.13 remote-as 200
+address-family ipv4 uni
+network 172.16.10.0 mask 255.255.255.224
+network 172.16.10.32 mask 255.255.255.224
+network 172.16.10.64 mask 255.255.255.224
+network 172.16.10.96 mask 255.255.255.240
+network 172.16.10.112 mask 255.255.255.240
+network 172.16.10.128 mask 255.255.255.240
+network 172.16.10.144 mask 255.255.255.240
+network 172.16.10.160 mask 255.255.255.240
+network 172.16.10.176 mask 255.255.255.248
+network 172.16.1.4 mask 255.255.255.252
+network 172.16.1.12 mask 255.255.255.252
+exit
+
+
+router ospf 1
+router-id 2.2.2.2
+netw 172.16.10.0 0.0.0.31 area 1
+netw 172.16.10.32 0.0.0.31 area 1
+netw 172.16.10.64 0.0.0.31 area 1
+netw 172.16.10.96 0.0.0.15 area 1
+netw 172.16.10.112 0.0.0.15 area 1
+netw 172.16.10.128 0.0.0.15 area 1
+netw 172.16.10.144 0.0.0.15 area 1
+netw 172.16.10.160 0.0.0.15 area 1
+netw 172.16.10.176 0.0.0.7 area 1
+netw 172.16.1.4 0.0.0.3 area 0
+netw 172.16.1.12 0.0.0.3 area 0
+red bgp 300
+pass g0/0/0
+pass se0/1/0
+exit
 
 
 -------->KHQ_Root_Sw<--------
@@ -1813,10 +1942,10 @@ exit
 
 router ospf 1
 router-id 4.4.4.4
-network 172.16.30.0 0.0.0.7 area 2
-network 172.16.30.8 0.0.0.7 area 2
-network 172.16.30.16 0.0.0.7 area 2
-network 172.16.30.24 0.0.0.7 area 2
+network 172.16.30.0 0.0.0.7 area 3
+network 172.16.30.8 0.0.0.7 area 3
+network 172.16.30.16 0.0.0.7 area 3
+network 172.16.30.24 0.0.0.7 area 3
 network 172.16.1.8 0.0.0.3 area 0
 network 172.16.1.12 0.0.0.3 area 0
 pass g0/0/0
@@ -1913,6 +2042,120 @@ exit
 
 
 
+_____________________________________________(っ◔◡◔)っ ♥ ISP-k ♥_____________________________________________________
+
+
+-------->ISP1<--------
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host ISP1
+banner motd "Keep Out!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip domain-name telekom.hu
+cr k g rsa
+y
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int se0/1/1
+ip add 209.165.67.1 255.255.255.252
+clo rat 4000000
+desc Towards BP_R1
+no sh
+exit
+
+int se0/1/0
+ip add 209.165.67.9 255.255.255.252
+clo rat 4000000
+desc Towards KHQ_R1
+no sh
+exit
+
+
+router bgp 200
+bgp router-id 1.1.1.1
+neighbour 209.165.67.2 remote-as 100
+neighbour 209.165.67.10 remote-as 300
+exit
+
+
+
+-------->ISP2<--------
+
+
+ena
+clo set 12:00:00 27 jan 2026 
+conf t
+host ISP2
+banner motd "Keep Out!"
+no ip domain-l
+ena sec class123
+service pass
+
+ip domain-name telekom.hu
+cr k g rsa
+y
+1024
+
+ip ssh ver 2
+
+user rendszergarazda priv 15 secret cisco123
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int se0/1/1
+ip add 209.165.67.13 255.255.255.252
+clo rat 4000000
+desc Towards KHQ_R2
+no sh
+exit
+
+int se0/1/0
+ip add 209.165.67.5 255.255.255.252
+clo rat 4000000
+desc Towards BP_R2
+no sh
+exit
+
+router bgp 200
+bgp router-id 2.2.2.2
+neighbour 209.165.67.6 remote-as 100
+neighbour 209.165.67.14 remote-as 300
+exit
 
 
 _________________________________________•?((¯°·._.• 丅Ｈ𝐞 έⓝ𝒹 •._.·°¯))؟•____________________________________________
