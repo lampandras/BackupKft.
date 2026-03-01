@@ -100,6 +100,7 @@ exit
 int g0/0/0.60
 enc dot 60
 ip add 10.10.10.145 255.255.255.240
+ip helper 10.10.10.78
 standby 6 ip 10.10.10.147
 standby 6 priority 150
 standby 6 preempt
@@ -109,6 +110,7 @@ exit
 int g0/0/0.70
 enc dot 70
 ip add 10.10.10.1 255.255.255.224
+ip helper 10.10.10.78
 standby 7 ip 10.10.10.3
 standby 7 priority 150
 standby 7 preempt
@@ -118,6 +120,7 @@ exit
 int g0/0/0.80
 enc dot 80
 ip add 10.10.10.33 255.255.255.224
+ip helper 10.10.10.78
 standby 8 ip 10.10.10.35
 standby 8 priority 150
 standby 8 preempt
@@ -134,9 +137,19 @@ des Towards ISP1
 no sh
 exit
 
-
- 
-
+router bgp 100
+bgp router-id 1.1.1.1
+neighbor 209.165.67.1 remote-as 200
+network 10.10.10.0 mask 255.255.255.224
+network 10.10.10.32 mask 255.255.255.224
+network 10.10.10.64 mask 255.255.255.240
+network 10.10.10.80 mask 255.255.255.240
+network 10.10.10.96 mask 255.255.255.240
+network 10.10.10.112 mask 255.255.255.240
+network 10.10.10.128 mask 255.255.255.240
+network 10.10.10.144 mask 255.255.255.240
+network 10.10.10.160 mask 255.255.255.252
+exit
 
 
 -------->BP_R2<--------
@@ -225,6 +238,7 @@ exit
 int g0/0/0.60
 enc dot 60
 ip add 10.10.10.146 255.255.255.240
+ip helper 10.10.10.78
 standby 6 ip 10.10.10.147
 des CEO_WIFI Gateway
 exit
@@ -232,6 +246,7 @@ exit
 int g0/0/0.70
 enc dot 70
 ip add 10.10.10.2 255.255.255.224
+ip helper 10.10.10.78
 standby 7 ip 10.10.10.3
 des DOLGOZOI_WIFI Gateway
 exit
@@ -239,6 +254,7 @@ exit
 int g0/0/0.80
 enc dot 80
 ip add 10.10.10.34 255.255.255.224
+ip helper 10.10.10.78
 standby 8 ip 10.10.10.35
 des VENDEG_WIFI Gateway
 exit
@@ -254,9 +270,8 @@ no sh
 exit
 
 router bgp 100
-bgp router-id 2.2.2.2
-neighbour 209.165.67.5 remote-as 200
-address-family ipv4 uni
+bgp router-id 1.1.1.1
+neighbor 209.165.67.5 remote-as 200
 network 10.10.10.0 mask 255.255.255.224
 network 10.10.10.32 mask 255.255.255.224
 network 10.10.10.64 mask 255.255.255.240
@@ -351,13 +366,9 @@ swit trunk nat vlan 99
 swit trunk all vlan 10,20,30,40,50,60,70,80,99
 exit
 
-int rang f0/22-24, g0/2
+int rang f0/21-24, g0/2
 swit mod acc
 swit acc vlan 99
-exit
-
-int range f0/1-4, f0/24
-
 exit
 
 int rang f0/8-21
@@ -492,6 +503,12 @@ swit acc vlan 30
 swit port-sec max 1
 swit port-sec mac sti
 swit port-sec viol shut
+exit
+
+int range f0/10-11, f0/17-19, g0/2
+swit mod acc
+swit acc vlan 999
+sh 
 exit
 
 int g0/1
@@ -1160,26 +1177,6 @@ int g0/0/0
 no sh
 exit
 
-int s0/1/1
-ip add 209.165.67.14 255.255.255.252
-no sh
-desc Towards ISP2
-exit
-
-int s0/1/0
-ip add 172.16.1.1 255.255.255.252
-clo rat 4000000
-desc Towards Gyor_R
-no sh
-exit
-
-int s0/2/0
-ip add 172.16.1.9 255.255.255.252
-clo rat 4000000
-desc Towards Baja_R
-no sh
-exit
-
 int g0/0/0.110
 enc dot 110
 ip add 172.16.10.97 255.255.255.240
@@ -1291,9 +1288,8 @@ no sh
 exit
 
 router bgp 300
-bgp router-id 1.1.1.1
-neighbour 209.165.67.9 remote-as 200
-address-family ipv4 uni
+bgp router-id 3.3.3.3
+neighbor 209.165.67.9 remote-as 200
 network 172.16.10.0 mask 255.255.255.224
 network 172.16.10.32 mask 255.255.255.224
 network 172.16.10.64 mask 255.255.255.224
@@ -1305,6 +1301,7 @@ network 172.16.10.160 mask 255.255.255.240
 network 172.16.10.176 mask 255.255.255.248
 network 172.16.1.0 mask 255.255.255.252
 network 172.16.1.8 mask 255.255.255.252
+red ospf 1
 exit
 
 
@@ -1321,7 +1318,7 @@ netw 172.16.10.160 0.0.0.15 area 1
 netw 172.16.10.176 0.0.0.7 area 1
 netw 172.16.1.0 0.0.0.3 area 0
 netw 172.16.1.8 0.0.0.3 area 0
-red bgp 300
+red bgp 300 subn
 pass g0/0/0
 pass se0/1/1
 exit
@@ -1365,26 +1362,6 @@ exe 25
 exit
 
 int g0/0/0
-no sh
-exit
-
-int s0/1/1
-ip add 172.16.1.5 255.255.255.252
-desc Towards Gyor_r
-clo rat 4000000
-no sh
-exit
-
-int s0/1/0
-ip add 209.165.67.9 255.255.255.252
-desc Towards ISP1
-no sh
-exit
-
-int s0/2/1
-ip add 172.16.1.14 255.255.255.252
-desc Towards Baja_r
-clo rat 4000000
 no sh
 exit
 
@@ -1500,9 +1477,8 @@ exit
 
 
 router bgp 300
-bgp router-id 2.2.2.2
-neighbour 209.165.67.13 remote-as 200
-address-family ipv4 uni
+bgp router-id 3.3.3.3
+neighbor 209.165.67.13 remote-as 200
 network 172.16.10.0 mask 255.255.255.224
 network 172.16.10.32 mask 255.255.255.224
 network 172.16.10.64 mask 255.255.255.224
@@ -1514,6 +1490,7 @@ network 172.16.10.160 mask 255.255.255.240
 network 172.16.10.176 mask 255.255.255.248
 network 172.16.1.4 mask 255.255.255.252
 network 172.16.1.12 mask 255.255.255.252
+red ospf 1
 exit
 
 
@@ -1530,7 +1507,7 @@ netw 172.16.10.160 0.0.0.15 area 1
 netw 172.16.10.176 0.0.0.7 area 1
 netw 172.16.1.4 0.0.0.3 area 0
 netw 172.16.1.12 0.0.0.3 area 0
-red bgp 300
+red bgp 300 subn
 pass g0/0/0
 pass se0/1/0
 exit
@@ -2093,11 +2070,10 @@ desc Towards KHQ_R1
 no sh
 exit
 
-
 router bgp 200
-bgp router-id 1.1.1.1
-neighbour 209.165.67.2 remote-as 100
-neighbour 209.165.67.10 remote-as 300
+bgp router-id 2.2.2.2
+neighbor 209.165.67.2 remote-as 100
+neighbor 209.165.67.10 remote-as 300
 exit
 
 
@@ -2153,8 +2129,8 @@ exit
 
 router bgp 200
 bgp router-id 2.2.2.2
-neighbour 209.165.67.6 remote-as 100
-neighbour 209.165.67.14 remote-as 300
+neighbor 209.165.67.6 remote-as 100
+neighbor 209.165.67.14 remote-as 300
 exit
 
 
