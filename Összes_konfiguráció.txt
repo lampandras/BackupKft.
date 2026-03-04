@@ -100,7 +100,6 @@ exit
 int g0/0/0.60
 enc dot 60
 ip add 10.10.10.145 255.255.255.240
-ip helper 10.10.10.78
 standby 6 ip 10.10.10.147
 standby 6 priority 150
 standby 6 preempt
@@ -110,7 +109,6 @@ exit
 int g0/0/0.70
 enc dot 70
 ip add 10.10.10.1 255.255.255.224
-ip helper 10.10.10.78
 standby 7 ip 10.10.10.3
 standby 7 priority 150
 standby 7 preempt
@@ -120,7 +118,6 @@ exit
 int g0/0/0.80
 enc dot 80
 ip add 10.10.10.33 255.255.255.224
-ip helper 10.10.10.78
 standby 8 ip 10.10.10.35
 standby 8 priority 150
 standby 8 preempt
@@ -132,14 +129,20 @@ no sh
 exit
 
 int se0/1/1
-ip add 209.165.67.2 255.255.255.252
-des Towards ISP1
+ip add 209.165.67.22 255.255.255.252
+des Towards ISP2
 no sh
 exit
 
+int loopback0
+ip add 5.5.5.5 255.255.255.255
+exit
+
+ip route 6.6.6.6 255.255.255.255 10.10.10.66
+
 router bgp 100
-bgp router-id 1.1.1.1
-neighbor 209.165.67.1 remote-as 200
+neighbor 10.10.10.66 remote-as 101
+neighbor 209.165.67.21 remote-as 20
 network 10.10.10.0 mask 255.255.255.224
 network 10.10.10.32 mask 255.255.255.224
 network 10.10.10.64 mask 255.255.255.240
@@ -149,8 +152,91 @@ network 10.10.10.112 mask 255.255.255.240
 network 10.10.10.128 mask 255.255.255.240
 network 10.10.10.144 mask 255.255.255.240
 network 10.10.10.160 mask 255.255.255.248
-network 209.165.67.0 mask 255.255.255.252
 exit
+
+
+access-list 10 permit 10.10.10.0 0.0.0.31
+access-list 10 permit 10.10.10.32 0.0.0.31
+access-list 10 permit 10.10.10.64 0.0.0.15
+access-list 10 permit 10.10.10.80 0.0.0.15
+access-list 10 permit 10.10.10.96 0.0.0.15
+access-list 10 permit 10.10.10.112 0.0.0.15
+access-list 10 permit 10.10.10.128 0.0.0.15
+access-list 10 permit 10.10.10.144 0.0.0.15
+access-list 10 permit 10.10.10.160 0.0.0.7
+
+int g0/0/0.10
+ip nat inside
+int g0/0/0.20
+ip nat inside
+int g0/0/0.30
+ip nat inside
+int g0/0/0.40
+ip nat inside
+int g0/0/0.50
+ip nat inside
+int g0/0/0.60
+ip nat inside
+int g0/0/0.70
+ip nat inside
+int g0/0/0.80
+ip nat inside
+int g0/0/0.99
+ip nat inside
+exit
+
+int se0/1/1
+ip nat outside
+exit
+
+ip nat inside source list 10 interface Serial0/1/1 overload
+
+ip access ext NAT_BYPASS_BP
+deny ip 10.10.10.0 0.0.0.255 172.16.0.0 0.0.255.255
+permit ip 10.10.10.0 255.255.255.0 any 
+exit
+
+no ip nat inside source list 10 int s0/1/1 overload
+ip nat inside source list NAT_BYPASS_BP int s0/1/1 overload
+
+int g0/0/0.10
+standby 1 priority 105
+standby 1 preempt
+standby 1 track se0/1/1
+int g0/0/0.20
+standby 2 priority 105
+standby 2 preempt
+standby 2 track se0/1/1
+int g0/0/0.30
+standby 3 priority 105
+standby 3 preempt
+standby 3 track se0/1/1
+int g0/0/0.40
+standby 4 priority 105
+standby 4 preempt
+standby 4 track se0/1/1
+int g0/0/0.50
+standby 5 priority 105
+standby 5 preempt
+standby 5 track se0/1/1
+int g0/0/0.60
+standby 6 priority 105
+standby 6 preempt
+standby 6 track se0/1/1
+int g0/0/0.70
+standby 7 priority 105
+standby 7 preempt
+standby 7 track se0/1/1
+int g0/0/0.80
+standby 8 priority 105
+standby 8 preempt
+standby 8 track se0/1/1
+int g0/0/0.99
+standby 9 priority 105
+standby 9 preempt
+standby 9 track se0/1/1
+exit
+
 
 
 -------->BP_R2<--------
@@ -239,7 +325,6 @@ exit
 int g0/0/0.60
 enc dot 60
 ip add 10.10.10.146 255.255.255.240
-ip helper 10.10.10.78
 standby 6 ip 10.10.10.147
 des CEO_WIFI Gateway
 exit
@@ -247,7 +332,6 @@ exit
 int g0/0/0.70
 enc dot 70
 ip add 10.10.10.2 255.255.255.224
-ip helper 10.10.10.78
 standby 7 ip 10.10.10.3
 des DOLGOZOI_WIFI Gateway
 exit
@@ -255,7 +339,6 @@ exit
 int g0/0/0.80
 enc dot 80
 ip add 10.10.10.34 255.255.255.224
-ip helper 10.10.10.78
 standby 8 ip 10.10.10.35
 des VENDEG_WIFI Gateway
 exit
@@ -265,14 +348,20 @@ no sh
 exit
 
 int se0/1/0
-ip add 209.165.67.6 255.255.255.252
-des Towards ISP2
+ip add 209.165.67.18 255.255.255.252
+des Towards ISP1
 no sh
 exit
 
+int loopback0
+ip add 6.6.6.6 255.255.255.255
+exit
+
+ip route 5.5.5.5 255.255.255.255 10.10.10.65
+
 router bgp 100
-bgp router-id 1.1.1.1
-neighbor 209.165.67.5 remote-as 200
+neighbor 10.10.10.65 remote-as 100
+neighbor 209.165.67.17 remote-as 10
 network 10.10.10.0 mask 255.255.255.224
 network 10.10.10.32 mask 255.255.255.224
 network 10.10.10.64 mask 255.255.255.240
@@ -282,9 +371,81 @@ network 10.10.10.112 mask 255.255.255.240
 network 10.10.10.128 mask 255.255.255.240
 network 10.10.10.144 mask 255.255.255.240
 network 10.10.10.160 mask 255.255.255.248
-network 209.165.67.4 mask 255.255.255.252
 exit
 
+access-list 10 permit 10.10.10.0 0.0.0.31
+access-list 10 permit 10.10.10.32 0.0.0.31
+access-list 10 permit 10.10.10.64 0.0.0.15
+access-list 10 permit 10.10.10.80 0.0.0.15
+access-list 10 permit 10.10.10.96 0.0.0.15
+access-list 10 permit 10.10.10.112 0.0.0.15
+access-list 10 permit 10.10.10.128 0.0.0.15
+access-list 10 permit 10.10.10.144 0.0.0.15
+access-list 10 permit 10.10.10.160 0.0.0.7
+
+int g0/0/0.10
+ip nat inside
+int g0/0/0.20
+ip nat inside
+int g0/0/0.30
+ip nat inside
+int g0/0/0.40
+ip nat inside
+int g0/0/0.50
+ip nat inside
+int g0/0/0.60
+ip nat inside
+int g0/0/0.70
+ip nat inside
+int g0/0/0.80
+ip nat inside
+int g0/0/0.99
+ip nat inside
+exit
+
+int se0/1/0
+ip nat outside
+exit
+
+ip nat inside source list 10 interface Serial0/1/0 overload
+
+ip access ext NAT_BYPASS_BP
+deny ip 10.10.10.0 0.0.0.255 172.16.0.0 0.0.255.255
+permit ip 10.10.10.0 255.255.255.0 any 
+exit
+
+no ip nat inside source list 10 int s0/1/0 overload
+ip nat inside source list NAT_BYPASS_BP int s0/1/0 overload
+
+
+int g0/0/0.10
+standby 1 priority 100
+standby 1 preempt
+int g0/0/0.20
+standby 2 priority 100
+standby 2 preempt
+int g0/0/0.30
+standby 3 priority 100
+standby 3 preempt
+int g0/0/0.40
+standby 4 priority 100
+standby 4 preempt
+int g0/0/0.50
+standby 5 priority 100
+standby 5 preempt
+int g0/0/0.60
+standby 6 priority 100
+standby 6 preempt
+int g0/0/0.70
+standby 7 priority 100
+standby 7 preempt
+int g0/0/0.80
+standby 8 priority 100
+standby 8 preempt
+int g0/0/0.99
+standby 9 priority 100
+standby 9 preempt
+exit
 
 
 
@@ -368,9 +529,13 @@ swit trunk nat vlan 99
 swit trunk all vlan 10,20,30,40,50,60,70,80,99
 exit
 
-int rang f0/21-24, g0/2
+int rang f0/22-24, g0/2
 swit mod acc
 swit acc vlan 99
+exit
+
+int range f0/1-4, f0/24
+
 exit
 
 int rang f0/8-21
@@ -505,12 +670,6 @@ swit acc vlan 30
 swit port-sec max 1
 swit port-sec mac sti
 swit port-sec viol shut
-exit
-
-int range f0/10-11, f0/17-19, g0/2
-swit mod acc
-swit acc vlan 999
-sh 
 exit
 
 int g0/1
@@ -1139,6 +1298,7 @@ spanning-tree mode rapid-pvst
 _____________________________________________(っ◔◡◔)っ ♥ Kecskemét (HQ) ♥_____________________________________________________
 
 
+
 -------->KHQ_R1<--------
 
 
@@ -1176,6 +1336,26 @@ exe 25
 exit
 
 int g0/0/0
+no sh
+exit
+
+int s0/1/1
+ip add 209.165.67.14 255.255.255.252
+no sh
+desc Towards ISP2
+exit
+
+int s0/1/0
+ip add 172.16.1.1 255.255.255.252
+clo rat 4000000
+desc Towards Gyor_R
+no sh
+exit
+
+int s0/2/0
+ip add 172.16.1.9 255.255.255.252
+clo rat 4000000
+desc Towards Baja_R
 no sh
 exit
 
@@ -1284,14 +1464,22 @@ no sh
 exit
 
 int se0/1/1
-ip add 209.165.67.10 255.255.255.252
-desc Towards ISP1
+ip add 209.165.67.26 255.255.255.252
+des Towards ISP3
 no sh
 exit
 
-router bgp 300
-bgp router-id 3.3.3.3
-neighbor 209.165.67.9 remote-as 200
+int loopback0
+ip add 7.7.7.7 255.255.255.255
+exit
+
+ip route 9.9.9.9 255.255.255.255 172.16.10.2 
+ip route 172.16.20.0 255.255.255.0 Null0 
+ip route 172.16.30.0 255.255.255.0 Null0
+
+router bgp 200
+neighbor 172.16.10.2 remote-as 201
+neighbor 209.165.67.25 remote-as 30
 network 172.16.10.0 mask 255.255.255.224
 network 172.16.10.32 mask 255.255.255.224
 network 172.16.10.64 mask 255.255.255.224
@@ -1303,10 +1491,56 @@ network 172.16.10.160 mask 255.255.255.240
 network 172.16.10.176 mask 255.255.255.248
 network 172.16.1.0 mask 255.255.255.252
 network 172.16.1.8 mask 255.255.255.252
-network 209.165.67.8 mask 255.255.255.252
-red ospf 1
+network 172.16.20.0 mask 255.255.255.0
+network 172.16.30.0 mask 255.255.255.0
 exit
 
+
+access-list 10 permit 172.16.10.0 0.0.0.31
+access-list 10 permit 172.16.10.32 0.0.0.31
+access-list 10 permit 172.16.10.64 0.0.0.31
+access-list 10 permit 172.16.10.96 0.0.0.15
+access-list 10 permit 172.16.10.112 0.0.0.15
+access-list 10 permit 172.16.10.128 0.0.0.15
+access-list 10 permit 172.16.10.144 0.0.0.15
+access-list 10 permit 172.16.10.160 0.0.0.15
+access-list 10 permit 172.16.10.176 0.0.0.7
+access-list 10 permit 172.16.1.0 0.0.0.3
+access-list 10 permit 172.16.1.8 0.0.0.3
+
+int g0/0/0.110
+ip nat inside
+int g0/0/0.120
+ip nat inside
+int g0/0/0.130
+ip nat inside
+int g0/0/0.140
+ip nat inside
+int g0/0/0.150
+ip nat inside
+int g0/0/0.160
+ip nat inside
+int g0/0/0.170
+ip nat inside
+int g0/0/0.180
+ip nat inside
+int g0/0/0.190
+ip nat inside
+exit
+
+int se0/1/1
+ip nat outside
+exit
+
+ip nat inside source list 10 interface Serial0/1/1 overload
+
+ip access ext NAT_BYPASS_KHQ
+deny ip 172.16.0.0 0.0.255.255 10.10.10.0 0.0.0.255
+permit ip 172.16.0.0 0.0.255.255 any
+exit
+
+no ip nat inside source list 10 int s0/1/1 overload
+ip nat inside source list NAT_BYPASS_KHQ int s0/1/1 overload
 
 router ospf 1
 router-id 1.1.1.1
@@ -1321,7 +1555,7 @@ netw 172.16.10.160 0.0.0.15 area 1
 netw 172.16.10.176 0.0.0.7 area 1
 netw 172.16.1.0 0.0.0.3 area 0
 netw 172.16.1.8 0.0.0.3 area 0
-red bgp 300 subn
+red bgp 200 subnets
 pass g0/0/0
 pass se0/1/1
 exit
@@ -1365,6 +1599,20 @@ exe 25
 exit
 
 int g0/0/0
+no sh
+exit
+
+int s0/1/1
+ip add 172.16.1.5 255.255.255.252
+desc Towards Gyor_r
+clo rat 4000000
+no sh
+exit
+
+int s0/2/1
+ip add 172.16.1.14 255.255.255.252
+desc Towards Baja_r
+clo rat 4000000
 no sh
 exit
 
@@ -1473,15 +1721,22 @@ no sh
 exit
 
 int se0/1/0
-ip add 209.165.67.14 255.255.255.252
-desc Towards ISP2
+ip add 209.165.67.30 255.255.255.252
+des Towards ISP4
 no sh
 exit
 
+int loopback0
+ip add 9.9.9.9 255.255.255.255
+exit
 
-router bgp 300
-bgp router-id 3.3.3.3
-neighbor 209.165.67.13 remote-as 200
+ip route 7.7.7.7 255.255.255.255 172.16.10.1
+ip route 172.16.20.0 255.255.255.0 Null0 
+ip route 172.16.30.0 255.255.255.0 Null0
+
+router bgp 201
+neighbor 172.16.10.1 remote-as 200
+neighbor 209.165.67.29 remote-as 40
 network 172.16.10.0 mask 255.255.255.224
 network 172.16.10.32 mask 255.255.255.224
 network 172.16.10.64 mask 255.255.255.224
@@ -1491,12 +1746,58 @@ network 172.16.10.128 mask 255.255.255.240
 network 172.16.10.144 mask 255.255.255.240
 network 172.16.10.160 mask 255.255.255.240
 network 172.16.10.176 mask 255.255.255.248
-network 172.16.1.4 mask 255.255.255.252
-network 172.16.1.12 mask 255.255.255.252
-network 209.165.67.12 mask 255.255.255.252
-red ospf 1
+network 172.16.1.0 mask 255.255.255.252
+network 172.16.1.8 mask 255.255.255.252
+network 172.16.20.0 mask 255.255.255.0
+network 172.16.30.0 mask 255.255.255.0
 exit
 
+
+access-list 10 permit 172.16.10.0 0.0.0.31
+access-list 10 permit 172.16.10.32 0.0.0.31
+access-list 10 permit 172.16.10.64 0.0.0.31
+access-list 10 permit 172.16.10.96 0.0.0.15
+access-list 10 permit 172.16.10.112 0.0.0.15
+access-list 10 permit 172.16.10.128 0.0.0.15
+access-list 10 permit 172.16.10.144 0.0.0.15
+access-list 10 permit 172.16.10.160 0.0.0.15
+access-list 10 permit 172.16.10.176 0.0.0.7
+access-list 10 permit 172.16.1.0 0.0.0.3
+access-list 10 permit 172.16.1.8 0.0.0.3
+
+int g0/0/0.110
+ip nat inside
+int g0/0/0.120
+ip nat inside
+int g0/0/0.130
+ip nat inside
+int g0/0/0.140
+ip nat inside
+int g0/0/0.150
+ip nat inside
+int g0/0/0.160
+ip nat inside
+int g0/0/0.170
+ip nat inside
+int g0/0/0.180
+ip nat inside
+int g0/0/0.190
+ip nat inside
+exit
+
+int se0/1/0
+ip nat outside
+exit
+
+ip nat inside source list 10 interface Serial0/1/0 overload
+
+ip access ext NAT_BYPASS_KHQ
+deny ip 172.16.0.0 0.0.255.255 10.10.10.0 0.0.0.255
+permit ip 172.16.0.0 0.0.255.255 any
+exit
+
+no ip nat inside source list 10 int s0/1/0 overload
+ip nat inside source list NAT_BYPASS_KHQ int s0/1/0 overload
 
 router ospf 1
 router-id 2.2.2.2
@@ -1511,7 +1812,7 @@ netw 172.16.10.160 0.0.0.15 area 1
 netw 172.16.10.176 0.0.0.7 area 1
 netw 172.16.1.4 0.0.0.3 area 0
 netw 172.16.1.12 0.0.0.3 area 0
-red bgp 300 subn
+red bgp 201 subnets
 pass g0/0/0
 pass se0/1/0
 exit
@@ -2029,10 +2330,14 @@ _____________________________________________(っ◔◡◔)っ ♥ ISP-k ♥____
 -------->ISP1<--------
 
 ena
-clo set 12:00:00 27 jan 2026 
+clo set 12:00:00 2 mar 2026 
 conf t
 host ISP1
-banner motd "Keep Out!"
+banner motd "*******************************************************************
+*  Magyar Telekom Nyrt. - Orszagos Gerinchalozat                  *
+*  UNAUTHORIZED ACCESS TO THIS DEVICE IS PROHIBITED BY LAW!       *
+*  All connections are logged and monitored.                      *
+*******************************************************************"
 no ip domain-l
 ena sec class123
 service pass
@@ -2044,7 +2349,7 @@ y
 
 ip ssh ver 2
 
-user rendszergarazda priv 15 secret cisco123
+user admin priv 15 secret yROxmNj2tsOtUjXMARaI3lbv
 
 line con 0
 pass cisco123
@@ -2060,24 +2365,34 @@ transport input ssh
 exe 25
 exit
 
-int se0/1/1
+int se0/1/0
+ip add 209.165.67.17 255.255.255.252
+clo rat 4000000
+desc Towards BP_R2
+no sh
+exit
+
+int se0/2/0
 ip add 209.165.67.1 255.255.255.252
 clo rat 4000000
-desc Towards BP_R1
+desc Towards ISP2
 no sh
 exit
 
-int se0/1/0
-ip add 209.165.67.9 255.255.255.252
-clo rat 4000000
-desc Towards KHQ_R1
+int se0/2/1
+ip add 209.165.67.14 255.255.255.252
+desc Towards ISP3
 no sh
 exit
 
-router bgp 200
-bgp router-id 2.2.2.2
-neighbor 209.165.67.2 remote-as 100
-neighbor 209.165.67.10 remote-as 300
+router bgp 10
+bgp router-id 1.1.1.1
+neighbor 209.165.67.18 remote-as 101
+neighbor 209.165.67.2 remote-as 20
+neighbor 209.165.67.13 remote-as 30
+network 209.165.67.0 mask 255.255.255.252
+network 209.165.67.12 mask 255.255.255.252
+network 209.165.67.16 mask 255.255.255.252
 exit
 
 
@@ -2086,10 +2401,14 @@ exit
 
 
 ena
-clo set 12:00:00 27 jan 2026 
+clo set 12:00:00 2 mar 2026 
 conf t
 host ISP2
-banner motd "Keep Out!"
+banner motd "*******************************************************************
+*  Magyar Telekom Nyrt. - Orszagos Gerinchalozat                  *
+*  UNAUTHORIZED ACCESS TO THIS DEVICE IS PROHIBITED BY LAW!       *
+*  All connections are logged and monitored.                      *
+*******************************************************************"
 no ip domain-l
 ena sec class123
 service pass
@@ -2101,7 +2420,7 @@ y
 
 ip ssh ver 2
 
-user rendszergarazda priv 15 secret cisco123
+user admin priv 15 secret yROxmNj2tsOtUjXMARaI3lbv
 
 line con 0
 pass cisco123
@@ -2118,39 +2437,180 @@ exe 25
 exit
 
 int se0/1/1
+ip add 209.165.67.21 255.255.255.252
+clo rat 4000000
+desc Towards BP_R1
+no sh
+exit
+
+int se0/2/0
+ip add 209.165.67.2 255.255.255.252
+desc Towards ISP1
+no sh
+exit
+
+int se0/2/1
+ip add 209.165.67.5 255.255.255.252
+clo rat 4000000
+desc Towards ISP4
+no sh
+exit
+
+router bgp 20
+bgp router-id 2.2.2.2
+neighbor 209.165.67.22 remote-as 100
+neighbor 209.165.67.1 remote-as 10
+neighbor 209.165.67.6 remote-as 40
+network 209.165.67.0 mask 255.255.255.252
+network 209.165.67.4 mask 255.255.255.252
+network 209.165.67.20 mask 255.255.255.252
+exit
+
+
+-------->ISP3<--------
+
+
+ena
+clo set 12:00:00 2 mar 2026 
+conf t
+host ISP3
+banner motd "*******************************************************************
+*  Magyar Telekom Nyrt. - Orszagos Gerinchalozat                  *
+*  UNAUTHORIZED ACCESS TO THIS DEVICE IS PROHIBITED BY LAW!       *
+*  All connections are logged and monitored.                      *
+*******************************************************************"
+no ip domain-l
+ena sec class123
+service pass
+
+ip domain-name telekom.hu
+cr k g rsa
+y
+1024
+
+ip ssh ver 2
+
+user admin priv 15 secret yROxmNj2tsOtUjXMARaI3lbv
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int se0/1/1
+ip add 209.165.67.25 255.255.255.252
+clo rat 4000000
+desc Towards KHQ_R1
+no sh
+exit
+
+int se0/2/0
+ip add 209.165.67.10 255.255.255.252
+desc Towards ISP4
+no sh
+exit
+
+int se0/2/1
 ip add 209.165.67.13 255.255.255.252
+clo rat 4000000
+desc Towards ISP1
+no sh
+exit
+
+router bgp 30
+bgp router-id 3.3.3.3
+neighbor 209.165.67.26 remote-as 200
+neighbor 209.165.67.14 remote-as 10
+neighbor 209.165.67.9 remote-as 40
+network 209.165.67.8 mask 255.255.255.252
+network 209.165.67.12 mask 255.255.255.252
+network 209.165.67.24 mask 255.255.255.252
+exit
+
+-------->ISP4<--------
+
+
+ena
+clo set 12:00:00 2 mar 2026 
+conf t
+host ISP4
+banner motd "*******************************************************************
+*  Magyar Telekom Nyrt. - Orszagos Gerinchalozat                  *
+*  UNAUTHORIZED ACCESS TO THIS DEVICE IS PROHIBITED BY LAW!       *
+*  All connections are logged and monitored.                      *
+*******************************************************************"
+no ip domain-l
+ena sec class123
+service pass
+
+ip domain-name telekom.hu
+cr k g rsa
+y
+1024
+
+ip ssh ver 2
+
+user admin priv 15 secret yROxmNj2tsOtUjXMARaI3lbv
+
+line con 0
+pass cisco123
+login
+loggi syn
+exe 25
+exit
+line vty 0 15 
+pass cisco123
+login
+login local 
+transport input ssh
+exe 25
+exit
+
+int se0/1/0
+ip add 209.165.67.29 255.255.255.252
 clo rat 4000000
 desc Towards KHQ_R2
 no sh
 exit
 
-int se0/1/0
-ip add 209.165.67.5 255.255.255.252
+int se0/2/0
+ip add 209.165.67.9 255.255.255.252
 clo rat 4000000
-desc Towards BP_R2
+desc Towards ISP3
 no sh
 exit
 
-router bgp 200
-bgp router-id 2.2.2.2
-neighbor 209.165.67.6 remote-as 100
-neighbor 209.165.67.14 remote-as 300
+int se0/2/1
+ip add 209.165.67.6 255.255.255.252
+desc Towards ISP2
+no sh
 exit
+
+router bgp 40
+bgp router-id 4.4.4.4
+neighbor 209.165.67.30 remote-as 201
+neighbor 209.165.67.5 remote-as 20
+neighbor 209.165.67.10 remote-as 30
+network 209.165.67.4 mask 255.255.255.252
+network 209.165.67.8 mask 255.255.255.252
+network 209.165.67.28 mask 255.255.255.252
+exit
+
 
 
 _________________________________________•?((¯°·._.• 丅Ｈ𝐞 έⓝ𝒹 •._.·°¯))؟•____________________________________________
 
 
 
-
-
-no router bgp 100
-
-no router bgp 200
-
-no router bgp 300
-
-no router ospf 1
 
 
 
