@@ -38,7 +38,7 @@ exe 25
 exit
 
 int g0/0/0.10
-enc dot 10*--
+enc dot 10
 ip add 10.10.10.81 255.255.255.240
 ip helper 10.10.10.78
 standby 1 ip 10.10.10.83
@@ -236,7 +236,6 @@ standby 9 preempt
 standby 9 track se0/1/1
 exit
 
-
 crypto isakmp policy 10
 encrypt aes 256
 hash  sha
@@ -244,10 +243,10 @@ auth pre-share
 group 5
 exit
 
-crypto isakmp key cisco123 address 209.165.67.26
-crypto isakmp key cisco123 address 209.165.67.30
-crypto isakmp key cisco123 address 172.16.1.2
-crypto isakmp key cisco123 address 172.16.1.10
+crypto isakmp key r1k1w&rl12%ap5d+bg08m address 209.165.67.26
+crypto isakmp key r1k2w&rl12%ap5d+bg08m address 209.165.67.30
+crypto isakmp key r1g1w&rl12%ap5d+bg08m address 172.16.1.2
+crypto isakmp key r1b1w&rl12%ap5d+bg08m address 172.16.1.10
 
 
 
@@ -294,25 +293,33 @@ tunnel mod gre ip
 int tunnel20
 ip add 192.168.100.5 255.255.255.252
 tunnel source s0/1/1
-tunnel des 172.16.1.2
+tunnel des 209.165.67.30
 tunnel mod gre ip
 
 int tunnel30
 ip add 192.168.100.9 255.255.255.252
 tunnel source s0/1/1
+tunnel des 172.16.1.2
+tunnel mod gre ip
+exit
+
+int tunnel40
+ip add 192.168.100.13 255.255.255.252
+tunnel source s0/1/1
 tunnel des 172.16.1.10
 tunnel mod gre ip
 exit
 
-ip route 172.16.10.0 255.255.255.0 s0/1/1
-ip route 172.16.20.0 255.255.255.0 s0/1/1
-ip route 172.16.30.0 255.255.255.0 s0/1/1
+ip route 172.16.10.0 255.255.255.0 192.168.100.2
+ip route 172.16.10.0 255.255.255.0 192.168.100.6
+ip route 172.16.20.0 255.255.255.0 192.168.100.10
+ip route 172.16.30.0 255.255.255.0 192.168.100.14
+
 
 
 
 
 -------->BP_R2<--------
-
 
 ena
 clo set 12:00:00 11 feb 2026
@@ -328,6 +335,8 @@ ip domain-name backup.hu.net
 cr k g rsa
 y
 1024
+
+
 
 ip ssh ver 2
 
@@ -527,10 +536,10 @@ auth pre-share
 group 5
 exit
 
-crypto isakmp key cisco123 address 209.165.67.26
-crypto isakmp key cisco123 address 209.165.67.30
-crypto isakmp key cisco123 address 172.16.1.2
-crypto isakmp key cisco123 address 172.16.1.10
+crypto isakmp key r2k1w&rl12%ap5d+bg08m address 209.165.67.26
+crypto isakmp key r2k2w&rl12%ap5d+bg08m address 209.165.67.30
+crypto isakmp key r2g1w&rl12%ap5d+bg08m address 172.16.1.6
+crypto isakmp key r2b1w&rl12%ap5d+bg08m address 172.16.1.14
 
 
 crypto ipsec transform-set BP_R2_SET esp-aes esp-sha
@@ -538,8 +547,8 @@ crypto ipsec transform-set BP_R2_SET esp-aes esp-sha
 
 access-list 111 permit gre host 209.165.67.18 host 209.165.67.26
 access-list 112 permit gre host 209.165.67.18 host 209.165.67.30
-access-list 121 permit gre host 209.165.67.18 host 172.16.1.2
-access-list 131 permit gre host 209.165.67.18 host 172.16.1.10
+access-list 121 permit gre host 209.165.67.18 host 172.16.1.6
+access-list 131 permit gre host 209.165.67.18 host 172.16.1.14
 
 
 crypto map BP_R2_MAP 10 ipsec-isakmp
@@ -553,12 +562,12 @@ set trans BP_R2_SET
 match address 112
 
 crypto map BP_R2_MAP 20 ipsec-isakmp
-set peer 172.16.1.2
+set peer 172.16.1.6
 set trans BP_R2_SET
 match address 121
 
 crypto map BP_R2_MAP 30 ipsec-isakmp
-set peer 172.16.1.10
+set peer 172.16.1.14
 set trans BP_R2_SET
 match address 131
 
@@ -577,20 +586,28 @@ exit
 int tunnel20
 ip add 192.168.200.5 255.255.255.252
 tunnel source s0/1/0
-tunnel des 172.16.1.2
+tunnel des 209.165.67.30
 tunnel mod gre ip
 exit
 
-int tunnel10
+int tunnel30
 ip add 192.168.200.9 255.255.255.252
 tunnel source s0/1/0
-tunnel des 172.16.1.9
+tunnel des 172.16.1.6
 tunnel mod gre ip
 exit
 
-ip route 172.16.10.0 255.255.255.0 s0/1/0
-ip route 172.16.20.0 255.255.255.0 s0/1/0
-ip route 172.16.30.0 255.255.255.0 s0/1/0
+int tunnel40
+ip add 192.168.200.13 255.255.255.252
+tunnel source s0/1/0
+tunnel des 172.16.1.14
+tunnel mod gre ip
+exit
+
+ip route 172.16.10.0 255.255.255.0 192.168.200.2
+ip route 172.16.10.0 255.255.255.0 192.168.200.6
+ip route 172.16.20.0 255.255.255.0 192.168.200.10
+ip route 172.16.30.0 255.255.255.0 192.168.200.14
 
 
 
@@ -1112,13 +1129,15 @@ crypto isakmp policy 10
  authentication pre-share
  group 5
 
-crypto isakmp key cisco123 address 209.165.67.22
-crypto isakmp key cisco123 address 209.165.67.18
+crypto isakmp key r1g1w&rl12%ap5d+bg08m address 209.165.67.22
+crypto isakmp key r2g1w&rl12%ap5d+bg08m address 209.165.67.18
 
 crypto ipsec transform-set GYOR_R_SET esp-aes esp-sha
 
 access 114 permit gre host 172.16.1.2 host 209.165.67.22
+Access 114 permit gre host 172.16.1.6 host 209.165.67.22
 access 115 permit gre host 172.16.1.2 host 209.165.67.18
+Access 115 permit gre host 172.16.1.6 host 209.165.67.18
 
 crypto map  GYOR_R_MAP 10 ipsec-isakmp
 set peer 209.165.67.22
@@ -1135,22 +1154,21 @@ crypto map GYOR_R_MAP
 exit
 
 int tunnel10
-ip add 192.168.100.6 255.255.255.252
+ip add 192.168.100.10 255.255.255.252
 tunnel source s0/1/0
 tunnel des 209.165.67.22
+tunnel mod gre ip
 
 int tunnel20
-ip add 192.168.200.6 255.255.255.252
+ip add 192.168.200.10 255.255.255.252
 tunnel source s0/1/0
 tunnel des 209.165.67.18
+tunnel mod gre ip
 exit
 
-ip route 10.10.10.0 255.255.255.0 s0/1/0
-ip route 10.10.10.0 255.255.255.0 s0/1/0
+ip route 10.10.10.0 255.255.255.0 192.168.100.9
+ip route 10.10.10.0 255.255.255.0 192.168.200.9
 
-router ospf 1
-red sta
-exit
 
 
 
@@ -1768,8 +1786,8 @@ hash sha
 auth pre-share
 group 5
 
-crypto isakmp key cisco123 address 209.165.67.22
-crypto isakmp key cisco123 address 209.165.67.18
+crypto isakmp key r1k1w&rl12%ap5d+bg08m address 209.165.67.22
+crypto isakmp key r1k2w&rl12%ap5d+bg08m address 209.165.67.18
 
 crypto ipsec transform-set KHQ_R1_SET esp-aes esp-sha
 
@@ -1790,6 +1808,7 @@ interface s0/1/1
 crypto map KHQ_R1_MAP
 exit
 
+
 int tunnel10
 ip address 192.168.100.2 255.255.255.252 
 tunnel des 209.165.67.22 
@@ -1800,15 +1819,12 @@ int tunnel20
 ip address 192.168.200.2 255.255.255.252
 tunnel des 209.165.67.18
 tunnel mod gre ip
-tunnel source s0/1/0
+tunnel source s0/1/1
 exit
 
-ip route 10.10.10.0 255.255.255.0 s0/1/1 
-ip route 10.10.10.0 255.255.255.0 s0/1/1 
+ip route 10.10.10.0 255.255.255.0 192.168.100.1
+ip route 10.10.10.0 255.255.255.0 192.168.200.1
 
-router ospf 1
-red sta
-exit
 
 
 -------->KHQ_R2<--------
@@ -2065,7 +2081,6 @@ red bgp 201 subnets
 pass g0/0/0
 pass se0/1/0
 exit
-
 crypto isakmp policy 10
 enc aes 256
 hash sha
@@ -2073,8 +2088,8 @@ auth pre
 group 5
 exit
 
-crypto isakmp key cisco123 address 209.165.67.22
-crypto isakmp key cisco123 address 209.165.67.18
+crypto isakmp key r1k2w&rl12%ap5d+bg08m address 209.165.67.22
+crypto isakmp key r2k2w&rl12%ap5d+bg08m address 209.165.67.18
 
 crypto ipsec trans KHQ_R2_SET esp-aes esp-sha
 
@@ -2097,25 +2112,21 @@ crypto map KHQ_R2_MAP
 exit
 
 int tunnel10
-ip add 192.168.200.6 255.255.255.252
+ip add 192.168.100.6 255.255.255.252
 tunnel source s0/1/0
 tunnel des 209.165.67.22
 tunnel mod gre ip
 exit
 
 int tunnel20
-ip add 192.168.200.10 255.255.255.252
+ip add 192.168.200.6 255.255.255.252
 tunnel source s0/1/0
 tunnel des 209.165.67.18
 tunnel mod gre ip
 exit
 
-ip route 10.10.10.0 255.255.255.0 s0/1/0
-ip route 10.10.10.0 255.255.255.0 s0/1/0
-
-router ospf 1
-red sta
-exit
+ip route 10.10.10.0 255.255.255.0 192.168.100.5
+ip route 10.10.10.0 255.255.255.0 192.168.200.5
 
 
 
@@ -2591,19 +2602,21 @@ ipv6 dhcp server B_NATIVE
 ipv6 nd m
 exit
 
-crypto isakmp policy 10
+crypto isakmp policy 1
  encryption aes 256
  hash sha
  authentication pre-share
  group 5
 
-crypto isakmp key cisco123 address 209.165.67.22
-crypto isakmp key cisco123 address 209.165.67.18
+crypto isakmp key r1b1w&rl12%ap5d+bg08m address 209.165.67.22
+crypto isakmp key r2b1w&rl12%ap5d+bg08m address 209.165.67.18
 
 crypto ipsec transform-set BAJA_R_SET esp-aes esp-sha
 
 access 115 permit gre host 172.16.1.10 host 209.165.67.22
+access 115 permit gre host 172.16.1.14 host 209.165.67.22
 access 116 permit gre host 172.16.1.10 host 209.165.67.18
+access 116 permit gre host 172.16.1.14 host 209.165.67.18
 
 crypto map  BAJA_R_MAP 10 ipsec-isakmp
 set peer 209.165.67.22
@@ -2620,22 +2633,21 @@ crypto map BAJA_R_MAP
 exit
 
 int tunnel10
-ip add 192.168.100.10 255.255.255.252
+ip add 192.168.100.14 255.255.255.252
 tunnel source s0/2/0
 tunnel des 209.165.67.22
+tunnel mod gre ip 
+exit 
 
 int tunnel20
-ip add 192.168.200.10 255.255.255.252
+ip add 192.168.200.14 255.255.255.252
 tunnel source s0/2/0
 tunnel des 209.165.67.18
+tunnel mod gre ip
 exit
 
-ip route 10.10.10.0 255.255.255.0 s0/2/0
-ip route 10.10.10.0 255.255.255.0 s0/2/0
-
-router ospf 1
-red sta
-exit
+ip route 10.10.10.0 255.255.255.0 192.168.100.13
+ip route 10.10.10.0 255.255.255.0 192.168.200.13
 
 
 
@@ -3074,3 +3086,380 @@ exit
 
 
 _________________________________________•?((¯°·._.• 丅Ｈ𝐞 έⓝ𝒹 •._.·°¯))؟•____________________________________________
+
+BP R1 VPN
+
+crypto isakmp policy 10
+encrypt aes 256
+hash  sha
+auth pre-share
+group 5
+exit
+
+crypto isakmp key r1_khq1 address 209.165.67.26
+crypto isakmp key r1_khq2 address 209.165.67.30
+crypto isakmp key r1_gyor address 172.16.1.2
+crypto isakmp key r1_baja address 172.16.1.10
+
+
+
+crypto ipsec transform-set BP_R1_SET esp-aes esp-sha
+
+
+access-list 110 permit gre host 209.165.67.22 host 209.165.67.26
+access-list 111 permit gre host 209.165.67.22 host 209.165.67.30
+access-list 120 permit gre host 209.165.67.22 host 172.16.1.2
+access-list 130 permit gre host 209.165.67.22 host 172.16.1.10
+
+
+crypto map BP_R1_MAP 10 ipsec-isakmp
+set peer 209.165.67.26
+set trans BP_R1_SET
+match address 110
+
+crypto map BP_R1_MAP 11 ipsec-isakmp
+set peer 209.165.67.30
+set trans BP_R1_SET
+match address 111
+
+crypto map BP_R1_MAP 20 ipsec-isakmp
+set peer 172.16.1.2
+set trans BP_R1_SET
+match address 120
+
+crypto map BP_R1_MAP 30 ipsec-isakmp
+set peer 172.16.1.10
+set trans BP_R1_SET
+match address 130
+
+
+int s0/1/1
+crypto map BP_R1_MAP
+exit
+
+int tunnel10
+ip add 192.168.100.1 255.255.255.252
+tunnel source s0/1/1
+tunnel des 209.165.67.26
+tunnel mod gre ip
+
+int tunnel20
+ip add 192.168.100.5 255.255.255.252
+tunnel source s0/1/1
+tunnel des 209.165.67.30
+tunnel mod gre ip
+
+int tunnel30
+ip add 192.168.100.9 255.255.255.252
+tunnel source s0/1/1
+tunnel des 172.16.1.2
+tunnel mod gre ip
+exit
+
+int tunnel40
+ip add 192.168.100.13 255.255.255.252
+tunnel source s0/1/1
+tunnel des 172.16.1.10
+tunnel mod gre ip
+exit
+
+ip route 172.16.10.0 255.255.255.0 192.168.100.2
+ip route 172.16.10.0 255.255.255.0 192.168.100.6
+ip route 172.16.20.0 255.255.255.0 192.168.100.10
+ip route 172.16.30.0 255.255.255.0 192.168.100.14
+
+
+
+BP R2 VPN
+
+
+crypto isakmp policy 10
+encrypt aes 256
+hash  sha
+auth pre-share
+group 5
+exit
+
+crypto isakmp key r2_khq1 address 209.165.67.26
+crypto isakmp key r2_khq2 address 209.165.67.30
+crypto isakmp key r2_gyor address 172.16.1.6
+crypto isakmp key r2_baja address 172.16.1.14
+
+
+crypto ipsec transform-set BP_R2_SET esp-aes esp-sha
+
+
+access-list 111 permit gre host 209.165.67.18 host 209.165.67.26
+access-list 112 permit gre host 209.165.67.18 host 209.165.67.30
+access-list 121 permit gre host 209.165.67.18 host 172.16.1.6
+access-list 131 permit gre host 209.165.67.18 host 172.16.1.14
+
+
+crypto map BP_R2_MAP 10 ipsec-isakmp
+set peer 209.165.67.26
+set trans BP_R2_SET
+match address 111
+
+crypto map BP_R2_MAP 11 ipsec-isakmp
+set peer 209.165.67.30
+set trans BP_R2_SET
+match address 112
+
+crypto map BP_R2_MAP 20 ipsec-isakmp
+set peer 172.16.1.6
+set trans BP_R2_SET
+match address 121
+
+crypto map BP_R2_MAP 30 ipsec-isakmp
+set peer 172.16.1.14
+set trans BP_R2_SET
+match address 131
+
+
+int s0/1/1
+crypto map BP_R2_MAP
+exit
+
+int tunnel10
+ip add 192.168.200.1 255.255.255.252
+tunnel source s0/1/0
+tunnel des 209.165.67.26
+tunnel mod gre ip
+exit
+
+int tunnel20
+ip add 192.168.200.5 255.255.255.252
+tunnel source s0/1/0
+tunnel des 209.165.67.30
+tunnel mod gre ip
+exit
+
+int tunnel30
+ip add 192.168.200.9 255.255.255.252
+tunnel source s0/1/0
+tunnel des 172.16.1.6
+tunnel mod gre ip
+exit
+
+int tunnel40
+ip add 192.168.200.13 255.255.255.252
+tunnel source s0/1/0
+tunnel des 172.16.1.14
+tunnel mod gre ip
+exit
+
+ip route 172.16.10.0 255.255.255.0 192.168.200.2
+ip route 172.16.10.0 255.255.255.0 192.168.200.6
+ip route 172.16.20.0 255.255.255.0 192.168.200.10
+ip route 172.16.30.0 255.255.255.0 192.168.200.14
+
+
+
+KECSO R1 VPN
+
+crypto isakmp policy 10
+encrypt aes 256
+hash sha
+auth pre-share
+group 5
+
+crypto isakmp key r1_khq1 address 209.165.67.22
+crypto isakmp key r2_khq1 address 209.165.67.18
+
+crypto ipsec transform-set KHQ_R1_SET esp-aes esp-sha
+
+access-list 112 permit gre host 209.165.67.26 host 209.165.67.22
+access-list 113 permit gre host 209.165.67.26 host 209.165.67.18
+
+crypto map KHQ_R1_MAP 10 ipsec-isakmp
+set peer 209.165.67.22
+set trans KHQ_R1_MAP
+match add 112
+crypto map KHQ_R1_MAP 20 ipsec-isakmp
+set peer 209.165.67.18
+set trans KHQ_R1_MAP
+match add 113
+exit
+
+interface s0/1/1
+crypto map KHQ_R1_MAP
+exit
+
+
+int tunnel10
+ip address 192.168.100.2 255.255.255.252 
+tunnel des 209.165.67.22 
+tunnel mod gre ip
+tunnel source s0/1/1
+
+int tunnel20
+ip address 192.168.200.2 255.255.255.252
+tunnel des 209.165.67.18
+tunnel mod gre ip
+tunnel source s0/1/1
+exit
+
+ip route 10.10.10.0 255.255.255.0 192.168.100.1
+ip route 10.10.10.0 255.255.255.0 192.168.200.1
+
+
+
+KECSO R2 VPN
+
+crypto isakmp policy 10
+enc aes 256
+hash sha
+auth pre
+group 5
+exit
+
+crypto isakmp key r1_khq2 address 209.165.67.22
+crypto isakmp key r2_khq2 address 209.165.67.18
+
+crypto ipsec trans KHQ_R2_SET esp-aes esp-sha
+
+access 113 permit gre host 209.165.67.30 host 209.165.67.22
+access 114 permit gre host 209.165.67.30 host 209.165.67.18
+
+crypto map KHQ_R2_MAP 10 ipsec-isakmp
+set peer 209.165.67.22
+set trans KHQ_R2_SET
+match address 113
+
+crypto map KHQ_R2_MAP 20 ipsec-isakmp
+set peer 209.165.67.18
+set trans KHQ_R2_SET
+match address 114
+exit
+
+int s0/1/0
+crypto map KHQ_R2_MAP
+exit
+
+int tunnel10
+ip add 192.168.100.6 255.255.255.252
+tunnel source s0/1/0
+tunnel des 209.165.67.22
+tunnel mod gre ip
+exit
+
+int tunnel20
+ip add 192.168.200.6 255.255.255.252
+tunnel source s0/1/0
+tunnel des 209.165.67.18
+tunnel mod gre ip
+exit
+
+ip route 10.10.10.0 255.255.255.0 192.168.100.5
+ip route 10.10.10.0 255.255.255.0 192.168.200.5
+
+
+
+BAJA VPN
+
+crypto isakmp policy 1
+ encryption aes 256
+ hash sha
+ authentication pre-share
+ group 5
+
+crypto isakmp key r1_baja address 209.165.67.22
+crypto isakmp key r2_baja address 209.165.67.18
+
+crypto ipsec transform-set BAJA_R_SET esp-aes esp-sha
+
+access 115 permit gre host 172.16.1.10 host 209.165.67.22
+access 115 permit gre host 172.16.1.14 host 209.165.67.22
+access 116 permit gre host 172.16.1.10 host 209.165.67.18
+access 116 permit gre host 172.16.1.14 host 209.165.67.18
+
+crypto map  BAJA_R_MAP 10 ipsec-isakmp
+set peer 209.165.67.22
+set trans BAJA_R_SET
+match address 115
+
+crypto map  BAJA_R_MAP 20 ipsec-isakmp
+set peer 209.165.67.18
+set trans BAJA_R_SET
+match address 116
+
+int s0/2/0
+crypto map BAJA_R_MAP
+exit
+
+int tunnel10
+ip add 192.168.100.14 255.255.255.252
+tunnel source s0/2/0
+tunnel des 209.165.67.22
+tunnel mod gre ip 
+exit 
+
+int tunnel20
+ip add 192.168.200.14 255.255.255.252
+tunnel source s0/2/0
+tunnel des 209.165.67.18
+tunnel mod gre ip
+exit
+
+ip route 10.10.10.0 255.255.255.0 192.168.100.13
+ip route 10.10.10.0 255.255.255.0 192.168.200.13
+
+
+
+GYOR VPN
+
+crypto isakmp policy 10
+ encryption aes 256
+ hash sha
+ authentication pre-share
+ group 5
+
+crypto isakmp key r1_gyor address 209.165.67.22
+crypto isakmp key r2_gyor address 209.165.67.18
+
+crypto ipsec transform-set GYOR_R_SET esp-aes esp-sha
+
+access 114 permit gre host 172.16.1.2 host 209.165.67.22
+Access 114 permit gre host 172.16.1.6 host 209.165.67.22
+access 115 permit gre host 172.16.1.2 host 209.165.67.18
+Access 115 permit gre host 172.16.1.6 host 209.165.67.18
+
+crypto map  GYOR_R_MAP 10 ipsec-isakmp
+set peer 209.165.67.22
+set trans GYOR_R_SET
+match address 114
+
+crypto map  GYOR_R_MAP 20 ipsec-isakmp
+set peer 209.165.67.18
+set trans GYOR_R_SET
+match address 115
+
+int s0/1/0
+crypto map GYOR_R_MAP
+exit
+
+int tunnel10
+ip add 192.168.100.10 255.255.255.252
+tunnel source s0/1/0
+tunnel des 209.165.67.22
+tunnel mod gre ip
+
+int tunnel20
+ip add 192.168.200.10 255.255.255.252
+tunnel source s0/1/0
+tunnel des 209.165.67.18
+tunnel mod gre ip
+exit
+
+ip route 10.10.10.0 255.255.255.0 192.168.100.9
+ip route 10.10.10.0 255.255.255.0 192.168.200.9
+
+
+
+
+
+
+
+
+
+
